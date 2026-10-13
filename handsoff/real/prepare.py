@@ -14,6 +14,7 @@ Usage: python -m handsoff.real.prepare sync --raw RAW --review DIR [--id-offset 
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import time
@@ -270,10 +271,9 @@ if __name__ == '__main__':
     ap.add_argument('--cosmos', type=Path, help='add the approved Cosmos variants from this directory')
     ap.add_argument('--takes', type=int, nargs='+', help='file numbers N (smoke test into a separate --out)')
     a = ap.parse_args()
-    a.raw, a.review = (ROOT/a.raw).resolve(), (ROOT/a.review).resolve()
-    a.labels = (ROOT/a.labels).resolve() if a.labels else a.raw/'labels.json'
-    a.out = (ROOT/a.out).resolve() if a.out else None
-    a.cosmos = (ROOT/a.cosmos).resolve() if a.cosmos else None
+    here = lambda p: Path(os.path.abspath(ROOT/p)) if p else None   # noqa: E731  (keeps symlinked data/ inside the repo)
+    a.raw, a.review, a.out, a.cosmos = here(a.raw), here(a.review), here(a.out), here(a.cosmos)
+    a.labels = here(a.labels) or a.raw/'labels.json'
     if a.stage == 'inputs' and not a.out:
         ap.error('inputs needs --out')
     {'sync': sync, 'inputs': inputs}[a.stage](a)
