@@ -1,10 +1,12 @@
 # Hands Off: Learning Task Intent from Multi-View Video
 
-**I record myself moving a wooden block with two phones. A robot hand in simulation then does the same *task*.** It does not copy my hand motion. The person is masked out of every frame, so the model has to read the task from what happens to the block.
+**Can a robot learn *what* you did to an object, without ever seeing *how* you did it?**
+
+I film myself moving a wooden block with two phones and mask myself out of every frame. A model reads the *task* from what happened to the block, and a simulated robot hand does the same task. It never copies my hand motion.
 
 ![You do a task, the model reads it, the robot hand does it](docs/media/hero.gif)
 
-<sub>A training take (D15) read by a model trained only on simulation, which never saw a real video. The held-out test on new recordings is below.</sub>
+<sub>A training take (D15), read by a model trained only on simulation that never saw a real video. Robot: the simulated Inspire hand doing the chosen task, rendered photoreal. The held-out test on new recordings is below.</sub>
 
 | | |
 |---|---|
@@ -24,9 +26,9 @@ The model maps each clip to a 64-d **intent vector** and is trained so that task
 
 <sub>"move right + roll right" − "move right" + "move left" → "move left + roll right". The answer is a different start, in a different room and material. Held-out sim starts; `sim_seed0`.</sub>
 
-The 9 tasks the robot hand can execute, seen from the person's viewpoint:
+The 9 tasks the robot hand can execute, from the person's viewpoint (one start and room, rendered photoreal):
 
-<img src="docs/media/robot_tasks.gif" width="560" alt="The 9 tasks executed by the Inspire hand">
+<img src="docs/media/robot_tasks.gif" width="600" alt="The 9 tasks executed by the Inspire hand">
 
 ## Results
 
@@ -50,9 +52,7 @@ The 9 tasks the robot hand can execute, seen from the person's viewpoint:
 | swap the move direction | right+roll − right + left → left+roll | 100 | 94 | 89 | 0 |
 
 **What these say:**
-- **Move left / stay / right transfers from sim to real well:** 84–91% on real clips, from a model that never saw one.
-- **On real video, the roll direction of an in-place roll is close to a coin flip.** "Rolled vs upright" is reliable; "left vs right" is not (about 7/14 clips).
-- **Adding my real takes did not help on held-out takes,** and it weakens the sim arithmetic. 16 takes is a small dataset; the test set decides.
+- **Move left / stay / right transfers from sim to real:** 84–91% on real clips, from a model that never saw one.
 - The head is *trained* with arithmetic on the training starts. The table shows that it generalises to new starts and looks, not that it emerges on its own.
 
 ## How it works
@@ -71,13 +71,8 @@ two phones ──► sync by audio ──► SAM3: mask person/hand/arm grey, fi
 
 ## What didn't work
 
-- **The robot gripped like someone sitting opposite.** The roll-left grip came from the far side, so in sim the hand's position gave the roll direction away. The sim-only model called 20 of 21 real in-place rolls "roll right". A human-like grip from the person's side removed that bias, but roll direction on real video is still near chance (above).
-- **Unlabelled real-data loss.** Teaching "both phones of a take must agree" collapsed every real clip to "roll left". Labelled takes replaced it.
-- **Flat MuJoCo renders** (red block, white table) left a large gap to real video, so all training images are photoreal now.
-- **3D block pose tracking** (FoundationPose) failed on the head view, where the hand covers the block. The model uses a 2D block track from SAM3 instead.
-- **RL for the robot motion** (a short SAC pilot on CPU): 0/45 complete motions against 30/45 for the scripted reference. Dropped; the motions stay scripted.
-- **A rigid robot forearm** hit the table in many motions. It was removed from the physics and the masks; the robot is a floating hand.
-- **Cosmos restylings are not always faithful.** In an earlier batch, 3 of 13 takes failed in every look: the block shrank, a second block appeared, or the block was erased. One video passed the automatic end-frame checks but morphed mid-clip. Hence the full-video human review of every generated clip.
+- **The roll direction does not transfer to real video.** "Rolled vs upright" is reliable, but for an in-place roll "left vs right" is close to a coin flip (7/14 held-out clips). In sim it is easy. Likely cause (not yet tested): in 8 masked, low-resolution frames of a small block, a left turn and a right turn look nearly the same.
+- **My own data did not beat simulation alone.** Adding my 16 labelled takes, and then their Cosmos restylings, did not improve held-out takes (69 → 66 → 62%), and it weakened the sim arithmetic (97 → 67 → 58%). Without labels it was worse: training "both phones of a take must agree" collapsed every real clip to a single task.
 
 ## Run it
 
