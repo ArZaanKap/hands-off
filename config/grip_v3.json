@@ -1,0 +1,75 @@
+{
+ "size": [
+  0.062,
+  0.038,
+  0.086
+ ],
+ "params": [
+  -0.040420496869366516,
+  0.026605765202550653,
+  -0.06269062407578921,
+  -0.016264198734076564,
+  -0.1608031618920748,
+  0.5807931838455013,
+  0.15526604345001244,
+  0.2498320094822541,
+  0.16572298056528012
+ ],
+ "names": [
+  "off_x",
+  "off_y",
+  "off_z",
+  "yaw",
+  "tilt",
+  "thumb_yaw",
+  "thumb_flex",
+  "finger_flex",
+  "pre_open"
+ ],
+ "source": "tune_rectangle_grip.py; verified before installation",
+ "search": "results/gentle_release_v1/side_search.json",
+ "verification": "results/gentle_release_v1/physics.json",
+ "verified_cases": 45,
+ "roll_frame": "block",
+ "collision_geometry": "full",
+ "motion": "clearance_side_human",
+ "gentle": true,
+ "placement_tolerances": {
+  "actual_gap_mm": 10,
+  "commanded_gap_mm": 15,
+  "touchdown_m_s": 0.3
+ },
+ "upright_params": [
+  -0.019638006594059988,
+  0.022471807483107918,
+  -0.061660119945088826,
+  0.04320334064593813,
+  -0.0758657370349133,
+  0.34464455174545705,
+  0.017172513654835186,
+  0.44517160870759265,
+  0.32676530795791003
+ ],
+ "left_params": [
+  -0.057502903033457314,
+  -0.002709562099532188,
+  -0.07699986394035004,
+  0.059659583828043136,
+  -0.6,
+  0.9276338325486719,
+  0.21122087385960822,
+  0.2884582270182155,
+  0.12048470418544367,
+  -0.71663800173636
+ ],
+ "left_source": "results/human_grip_v1/search.json (tune_rectangle_grip --human-left, 1250 candidates), verified results/human_grip_v1/verification.json",
+ "left_verification": {
+  "cases": 108,
+  "task_and_gentle_ok": 108,
+  "worst_twist_deg": 1.2434707649884023,
+  "worst_pos_err_mm": 1.9970749940466013,
+  "min_clearance_mm": 0.0,
+  "failures": []
+ },
+ "note": "R20 (user 12 Oct): roll left uses its own grasp from the person's side (clearance_side_human). Roll right and upright grasps unchanged from gentle_release_v1."
+}

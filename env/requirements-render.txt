@@ -1,0 +1,14 @@
+absl-py==2.5.0
+etils==1.14.0
+fsspec==2026.9.0
+glfw==2.10.2
+imageio==2.38.1
+imageio-ffmpeg==0.6.0
+mujoco==3.7.0
+numpy==2.5.3
+ovrtx==0.5.1.385782
+ovstage==0.2.1.385922
+pillow==12.3.0
+pyopengl==3.1.10
+typing-extensions==4.16.0
+zipp==4.1.1

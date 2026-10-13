@@ -1,0 +1,7 @@
+# Generated data, model outputs, downloaded code and environments (see README: Setup)
+data
+results
+external
+.venv*
+__pycache__/
+*.py[cod]
