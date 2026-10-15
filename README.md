@@ -67,10 +67,11 @@
 
 ### Vector comparison
 
-![Real test clip vs sim clips: 36° to the same task, 81° to a different task](docs/media/angles_success.jpg)
+![Angle between intent vectors: real test clip 36° from a sim clip of the same task, 81° from a sim clip of a different task](docs/media/angles_success.png)
 
-- **Same task:** a real clip lies 36° from a sim clip of the same task.
-- **Different task:** it lies 81° from a sim clip of a different task.
+- **Same task:** 36° between the real clip and a sim clip of the same task.
+- **Different task:** 81° to a sim clip of a different task.
+- **Drawing:** the angles are the true angles between the 64-D vectors. A 2D PCA would distort them (36° would shrink to a few degrees).
 
 ## Results summary
 
@@ -99,7 +100,7 @@ Real test set, per question (outcome correct, %): did it move 90 · which way 71
 
 ### 2. Roll direction on real video is at chance
 
-![Real "roll left" lies 32° from sim "roll right" and 90° from sim "roll left"](docs/media/angles_failure.jpg)
+![Angle between intent vectors: real "roll left" 32° from sim "roll right", 90° from sim "roll left"](docs/media/angles_failure.png)
 
 - **Example:** real "roll left" lies closer to sim "roll right" (32°) than to sim "roll left" (90°).
 - **Real test set:** whether the block rolled is 100% correct; which way it rolled is 52%, chance level.
