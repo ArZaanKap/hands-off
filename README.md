@@ -12,6 +12,16 @@
 - **Tasks:** 9 = move {left, stay, right} × roll {left, none, right}.
 - **Training:** sim only. **Evaluation:** held-out sim and real human demonstrations.
 
+## Own data
+
+![Uncropped phone frames: head phone and second phone at the same moment, and the head phone in an outdoor scene](docs/media/own_data_frames.jpg)
+
+- **Recorded by the author:** 34 two-phone takes of one wooden block, one task per take. 16 development takes guided design choices; 18 test takes, recorded after the system was frozen, measure transfer (5 in an outdoor scene absent from training).
+- **Role:** never trained on. Each real clip is encoded to *z* and drives the simulated hand, which measures sim-to-real transfer.
+- **Sim design:** the block, camera placement, cropping and robot grip match the recordings.
+
+Details: [docs/own_data.md](docs/own_data.md).
+
 ## Architecture
 
 ![Architecture: input video, agent masking, Cosmos-Embed1, intent head, policy](docs/media/architecture.png)
@@ -111,6 +121,8 @@ Real test set, per question (outcome correct, %): did it move 90 · which way 71
 - For real clips, the block starts from one fixed position in sim. The hand executes its waypoints open loop, without feedback.
 - Real data: one demonstrator, two scenes, 34 takes.
 
+Other approaches tried, with their results: [docs/tried_and_dropped.md](docs/tried_and_dropped.md).
+
 ## Future work
 
 - **Roll direction:** more frames and higher resolution around the turn.
@@ -159,5 +171,6 @@ weights/   trained head and policy (seed 0), sim scene settings: all that script
 scripts/   one shell script per stage
 config/    grip parameters, confirmed labels, take split, Cosmos review log, track-noise models
 tests/     unit tests: robot geometry and grip, task composition, trainer leakage and resume, policy, approval gate
-docs/      own_recordings.md (guide for new recordings), decisions.md (design rules and rationale), media/
+docs/      own_data.md (how the real data was recorded and used) · tried_and_dropped.md (approaches tried, with results)
+           own_recordings.md (guide for new recordings) · decisions.md (design rules and rationale) · media/
 ```
