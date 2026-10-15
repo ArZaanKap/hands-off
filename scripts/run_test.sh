@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
-# The single test on new recordings, run once (R08): inputs exactly as for the training takes -> the 9 final heads ->
-# the robot. Before it: `prepare sync` (CPU), the user watches every *_both_phones.mp4 and confirms RAW/labels.json
-# (R09), and the test take ids are in the test fold of config/real_split.json (R08).
+# New recordings -> the robot (R08): inputs exactly as for the development takes -> each trained head -> the policy ->
+# the robot at the fixed start. No sim dataset needed. Before it: `prepare sync` (CPU), then watch every
+# *_both_phones.mp4 and confirm RAW/labels.json (R09). Step by step for new recordings: docs/own_recordings.md.
 # Usage: bash scripts/run_test.sh RAW [OUT] [REVIEW] [DATA]
-#   e.g. bash scripts/run_test.sh data/raw/test_takes    (defaults results/test, results/test_inputs, data/real/test_takes)
+#   e.g. bash scripts/run_test.sh data/raw/my_takes    (defaults results/test, results/test_inputs, data/real/test_takes)
+# WEIGHTS: the trained system, default weights/ (shipped, seed 0); after scripts/train.sh: WEIGHTS=results/final (3 seeds).
 source "$(dirname -- "$0")/common.sh"
-export RAW=$1 OUT=${2:-results/test} REVIEW=${3:-results/test_inputs} DATA=${4:-data/real/test_takes}
+export RAW=$1 OUT=${2:-results/test} REVIEW=${3:-results/test_inputs} DATA=${4:-data/real/test_takes} WEIGHTS=${WEIGHTS:-weights}
 chain() {
-  SIM=data/sim/intent_tasks_train_v3
   echo "START $(date -Is) rules (code)"; spider -m handsoff.rules
   echo "START $(date -Is) inputs"; mask -m handsoff.real.prepare inputs --raw "$RAW" --review "$REVIEW" --out "$DATA"
-  echo "START $(date -Is) embed"; spider -m handsoff.model.embed "$DATA" --batch 4 --save-every 4
-  echo "START $(date -Is) rules"; spider -m handsoff.rules --sim $SIM --real "$DATA" --labels "$RAW/labels.json"
-  echo "START $(date -Is) execute"; spider -m handsoff.model.evaluate execute --sim $SIM --queries "$DATA" --out "$OUT" \
-    --runs results/final/*_seed* --purpose "Single test on new recordings (never trained on, never used to pick a model)"
-  echo "START $(date -Is) render"; MUJOCO_GL=egl spider -m handsoff.model.evaluate render --sim $SIM --queries "$DATA" --out "$OUT"
-  echo "START $(date -Is) report"; spider -m handsoff.model.evaluate report --sim $SIM --queries "$DATA" --out "$OUT"
-  echo "DONE $(date -Is) $OUT/summary.md"
+  echo "START $(date -Is) embed features"; spider -m handsoff.model.embed "$DATA" --batch 4 --save-every 4
+  echo "START $(date -Is) rules"; spider -m handsoff.rules --real "$DATA" --labels "$RAW/labels.json"
+  for F in "$WEIGHTS"/seed*; do
+    S=$(basename "$F")
+    echo "START $(date -Is) z $S"; spider -m handsoff.policy.policy embed --real-only --head "$F/head" --real "$DATA" --z "$OUT/$S/z.npz"
+    echo "START $(date -Is) robot $S"; spider -m handsoff.policy.policy eval --sim "$WEIGHTS/scene.json" --z "$OUT/$S/z.npz" \
+      --plans "$WEIGHTS/durations.npz" --policy "$F/policy/policy.pt" --out "$OUT/$S" --sets real
+  done
+  echo "DONE $(date -Is) $OUT/seed*/report.json"
 }
 detach "$OUT/chain.log"

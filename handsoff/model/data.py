@@ -1,6 +1,6 @@
 """Loading model inputs: sim and real clips as frozen Cosmos-Embed1 features + 2D block tracks, task labels, folds.
 
-Features per clip (view): `frames` (8 x 1408 frame CLS tokens), `proj` (768 clip vector), `track` (8 x 5 block box
+Features per clip (view): `frames` (8 x 1408 Cosmos-Embed1 frame CLS tokens), `track` (8 x 5 block box
 u, v, w, h, visible; sim tracks are exact, real ones come from SAM3, so sim tracks get SAM3-like noise in training).
 """
 import json
@@ -20,7 +20,7 @@ NOISE_TRUTH = ROOT/'config/track_noise_sim.npz'   # ... and the exact tracks of 
 
 
 def load_features(dataset):
-    """Sim dataset -> dict(x={frames [E,V,8,1408], proj [E,V,768], track [E,V,8,5]}, outcome [E,3] (dx, dy, roll),
+    """Sim dataset -> dict(x={frames [E,V,8,1408], track [E,V,8,5]}, outcome [E,3] (dx, dy, roll),
     look/head [E,V], ok [E], eps [E]). Episodes missing any view are dropped."""
     root = Path(dataset)
     require_dataset_approval(root)
@@ -35,7 +35,6 @@ def load_features(dataset):
     head = np.array([[c.get('kind') == 'head' for c in m['cameras']] for m in meta])
     head[:, 0] = True   # v0 is always the (look-0) head view
     x = dict(frames=torch.tensor(f['frame_cls'][sel], dtype=torch.float32),
-             proj=torch.tensor(f['proj'][sel], dtype=torch.float32),
              track=torch.tensor(t['track'][[[tidx[(int(e), v)] for v in range(V)] for e in keep]]))
     return dict(x=x, outcome=np.array([[*m['outcome']['disp'][:2], m['outcome']['roll']] for m in meta], np.float32),
                 look=np.array([[c.get('look', 0) for c in m['cameras']] for m in meta]), head=head,
@@ -113,7 +112,7 @@ def load_sim(dataset):
     metas = [json.loads((root/f'ep{e:05d}/meta.json').read_text()) for e in D['eps']]
     if len(metas) != len(list(root.glob('ep*/meta.json'))) or not D['ok'].all() or not eligible(D['outcome']).all():
         raise ValueError('Need complete, physically successful, category-eligible simulation clips')
-    views = D['x']['proj'].shape[1]
+    views = D['x']['frames'].shape[1]
     if any(len(m['cameras']) != views for m in metas) or any(not torch.isfinite(v).all() for v in D['x'].values()):
         raise ValueError('Incomplete camera/feature cache or nonfinite input')
     rows = [dict(domain='sim', cat=category(D['outcome'][i]).tolist(), outcome=D['outcome'][i].tolist(),
@@ -128,7 +127,7 @@ def load_sim(dataset):
 
 
 def load_queries(qdir, review_path=REVIEW_PATH):
-    """Real dataset -> (keys [(ep, view)], x {frames, proj, track} [N, ...], metas {ep: meta}). Generated (Cosmos)
+    """Real dataset -> (keys [(ep, view)], x {frames, track} [N, ...], metas {ep: meta}). Generated (Cosmos)
     views without the user's approval are left out."""
     qdir = Path(qdir)
     f = np.load(qdir/'cosmos_agent.npz')
@@ -142,7 +141,6 @@ def load_queries(qdir, review_path=REVIEW_PATH):
     t = np.load(qdir/'block_track_sam3.npz')
     ti = {(int(e), int(v)): tr for e, v, tr in zip(t['ep'], t['view'], t['track'])}
     x = dict(frames=torch.tensor(f['frame_cls'][keep], dtype=torch.float32),
-             proj=torch.tensor(f['proj'][keep], dtype=torch.float32),
              track=torch.tensor(np.array([ti[k] for k in keys])))
     return keys, x, metas
 

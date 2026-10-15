@@ -14,7 +14,7 @@ import numpy as np
 import torch
 from PIL import Image, ImageDraw, ImageFont
 
-from handsoff.model.data import FEAT, TrackNoise, load_sim, read_inputs
+from handsoff.model.data import TrackNoise, load_sim, read_inputs
 from handsoff.model.head import Head, embed_all
 from handsoff.model.tasks import FAMILIES, composition_queries, name
 
@@ -41,7 +41,7 @@ def main():
     a = ap.parse_args(); a.out.mkdir(parents=True, exist_ok=True)
     D, metas, rows, folds = load_sim(a.sim)
     seed = json.loads((a.run/'results.json').read_text())['provenance']['seed']
-    head = Head(FEAT); head.load_state_dict(torch.load(a.run/'head.pt', map_location='cpu')); head.eval()
+    head = Head(); head.load_state_dict(torch.load(a.run/'head.pt', map_location='cpu')); head.eval()
     val = folds['validation']; x = {k: v[val].clone() for k, v in D['x'].items()}
     x['track'] = TrackNoise()(x['track'], torch.Generator().manual_seed(1000+seed))   # same as training validation
     zv = embed_all(x, head, 'cpu')

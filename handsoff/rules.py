@@ -189,9 +189,9 @@ def _(**_):
 @check('trainer_real_labels', 'code')
 def _(**_):
     source = trainer_source()
-    ok = 'real_task_loss(model, real_x, real_used' in source and 'alignment' not in source
-    return ok, 'real training takes teach with their confirmed labels' if ok else \
-        'the trainer has a real-video loss other than the labelled one'
+    ok = 'load_queries' not in source and 'real_x' not in source and 'alignment' not in source
+    return ok, 'the final head trains on sim clips only (no real-video loss)' if ok else \
+        'the trainer has a real-video loss (the final head is sim-only)'
 
 
 def annotations(extra=()):
@@ -220,7 +220,8 @@ def _(real, labels, **_):
 @check('real_split', 'real')
 def _(real, split, labels, **_):
     """R08 (changed 12 Oct): whole takes, one fold each; every approved recorded take trains; the test set is new
-    recordings that cover every task type (checked once they are added)."""
+    recordings that cover every task type (checked once they are added). Takes numbered 100+ in no fold are new
+    recordings (e.g. someone else's): they pass, as the final head is sim-only (trainer_real_labels)."""
     s = json.loads(split.read_text())['folds']; ann = annotations(labels); problems = []
     member = {}
     for fold, takes in s.items():
@@ -229,7 +230,8 @@ def _(real, split, labels, **_):
                 problems.append(f'D{t:02d} in {member[t]} and {fold}')
             member[t] = fold
     takes = {int(json.loads(p.read_text()).get('parent_episode', int(p.parent.name[2:]))) for p in real.glob('ep*/meta.json')}
-    problems += [f'D{t:02d} has no fold' for t in sorted(takes - set(member))]
+    new = sorted(t for t in takes - set(member) if t >= 100)
+    problems += [f'D{t:02d} has no fold' for t in sorted(takes - set(member) - set(new))]
     problems += [f'D{t:02d} is in {member[t]}, not train' for t in sorted(takes) if t in member and member[t] != 'train' and t <= 17]
     task = lambda t: (ann[t]['translation'], ann[t]['roll'])
     if s['test']:
@@ -237,7 +239,8 @@ def _(real, split, labels, **_):
         missing = every - {task(t) for t in s['test'] if t in ann}
         if missing:
             problems.append(f'test lacks task types {sorted(missing)}')
-    note = f"{len(s['test'])} test takes" if s['test'] else 'test = 13 Oct recordings, not added yet'
+    note = f"{len(s['test'])} test takes" if s['test'] else 'test = 14 Oct recordings, not in this file'
+    note += f"; {len(new)} new recordings outside the split (never trained on)" if new else ''
     return not problems, '; '.join(problems[:4]) if problems else \
         f"split by take: {len(s['train'])} train / {len(s['validation'])} validation; {note}"
 
@@ -245,10 +248,8 @@ def _(real, split, labels, **_):
 @check('trainer_fixed_epochs', 'code')
 def _(**_):
     source = trainer_source()
-    ok = "if epoch+1 == a.epochs:\n            atomic_torch(a.out/'head.pt'" in source and 'best' not in source \
-        and "default=ROOT/'config/real_split.json'" in source
-    return ok, 'head.pt = final epoch of a fixed schedule; default real split config/real_split.json' if ok else \
-        'the trainer can pick an epoch by validation, or uses another real split by default'
+    ok = "if epoch+1 == a.epochs:\n            atomic_torch(a.out/'head.pt'" in source and 'best' not in source
+    return ok, 'head.pt = final epoch of a fixed schedule' if ok else 'the trainer can pick an epoch by validation'
 
 
 def main():

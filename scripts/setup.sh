@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-time setup (tested on an aarch64 DGX Spark, CUDA 13, Python 3.12, uv). Three venvs because their pins conflict:
 #   .venv-spider  simulation (MuJoCo), Cosmos-Embed1 (needs transformers 4.51.3), training, evaluation
-#   .venv-mask    SAM3 (needs transformers 5.x); request access to facebook/sam3 on Hugging Face and log in first
+#   .venv-mask    SAM3 (needs transformers 5.x); request access to facebook/sam3 on Hugging Face (downloaded below)
 #   .venv-render  ovrtx, NVIDIA's RTX renderer, for the photoreal sim images
 # Plus the Inspire hand model (SPIDER repo, pinned commit) and the HDRI backgrounds. Cosmos-Transfer2.5 (only needed to
 # generate new appearance variants) is set up separately: see scripts/run_cosmos.sh.
@@ -19,3 +19,4 @@ done
 [[ -d external/spider ]] || { git clone https://github.com/facebookresearch/spider external/spider &&
   git -C external/spider checkout 44717007de41cbef7565dff7ff9f4453557a2d3d; }
 .venv-spider/bin/python -m handsoff.sim.ovrtx fetch   # HDRI backgrounds -> data/assets/hdri
+.venv-mask/bin/hf download facebook/sam3 > /dev/null   # gated: request access, then `.venv-mask/bin/hf auth login`

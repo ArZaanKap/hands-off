@@ -117,9 +117,13 @@ Real test set, per question (outcome correct, %): did it move 90 · which way 71
 - **Training the head on real clips:** on the test set, sim-only scored 47% and sim + real scored 35% (nearest-clip readout).
 - **Cosmos-transferred real clips:** they did not improve held-out real takes, and they weakened sim arithmetic.
 
-## Reproduce
+## Running on new recordings
 
-> The final head and policy are being ported from the development workbench. The commands below cover setup, the sim training set and real-data preparation.
+- **Guide:** [docs/own_recordings.md](docs/own_recordings.md), with step-by-step recording, file layout, commands and expected output.
+- **Requirements:** the trained weights in `weights/` (9 MB). The sim training set and the original recordings are not needed.
+- **Output:** for each clip, the demonstrated task, the task the simulated hand performed and success.
+
+## Reproduce
 
 Tested on an aarch64 NVIDIA DGX Spark (GB10, CUDA 13), Python 3.12, [uv](https://docs.astral.sh/uv/).
 
@@ -129,9 +133,14 @@ Tested on an aarch64 NVIDIA DGX Spark (GB10, CUDA 13), Python 3.12, [uv](https:/
 | Build the sim training set | `bash scripts/build_sim.sh` | ~2.5 h |
 | Sync two-phone takes | `.venv-spider/bin/python -m handsoff.real.prepare sync --raw RAW --review DIR` | ~5 s per take |
 | Mask, crop, embed takes | `bash scripts/prepare_real.sh ...` (see header) | ~1 min per take |
+| Train and evaluate (plans, head, policy; 3 seeds) | `bash scripts/train.sh` | ~15 min |
+| Test on new recordings ([guide](docs/own_recordings.md)) | `bash scripts/run_test.sh RAW` | ~1 min per take |
 | Unit tests | `.venv-spider/bin/python -m unittest discover -s tests -t .` | 2 s |
 
 Each script runs detached, writes a log and stops at the first failed step. `python -m handsoff.rules` checks a dataset against the design rules (`docs/decisions.md`) before training.
+
+- **Reproducibility check:** a fresh run of `scripts/train.sh` and the evaluation steps of `WEIGHTS=results/final scripts/run_test.sh` reproduce every reported physics outcome, for all 3 seeds: 432 sim clips, 36 arithmetic queries, 32 development clips and 36 test clips per seed. Trained head weights are bit-identical.
+- **Data:** `scripts/build_sim.sh` rebuilds the sim training set. The real recordings are not published, so the development and test rows need them; every other row runs without them.
 
 ## Repository map
 
@@ -142,10 +151,12 @@ handsoff/
   real/    sync.py (two-phone audio sync) · sam3.py (masks, block) · framing.py (crop, shared with sim)
            prepare.py (takes → model inputs) · cosmos.py (Cosmos transfer) · review_gate.py (human approval gate)
   model/   embed.py (Cosmos-Embed1) · head.py (intent head) · tasks.py (9 tasks, composition) · data.py
-           train.py · choose_epochs.py · evaluate.py · arithmetic.py
+           train.py (head training) · arithmetic.py (composition examples)
+  policy/  plans.py (teacher waypoints, physics execution) · policy.py (z + start → motion; embed, train, eval)
   rules.py automatic checks of the design rules
+weights/   trained head and policy (seed 0), sim scene settings: all that scripts/run_test.sh needs
 scripts/   one shell script per stage
 config/    grip parameters, confirmed labels, take split, Cosmos review log, track-noise models
-tests/     unit tests: robot geometry and grip, task composition, trainer leakage and resume, approval gate
-docs/      decisions.md (design rules and rationale), media/
+tests/     unit tests: robot geometry and grip, task composition, trainer leakage and resume, policy, approval gate
+docs/      own_recordings.md (guide for new recordings), decisions.md (design rules and rationale), media/
 ```

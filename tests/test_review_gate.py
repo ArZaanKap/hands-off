@@ -76,7 +76,7 @@ class ReviewGate(unittest.TestCase):
             np.savez(d/'block_track_sam3.npz', ep=[0, 0, 0], view=[0, 1, 2], track=np.array([np.full((8, 5), n) for n in [1, 2, 3]]))
             keys, x, _ = load_queries(d, review_path=reviews)
             self.assertEqual(keys, [(0, 0), (0, 2)])
-            self.assertEqual(x['proj'][:, 0].tolist(), [1, 3])
+            self.assertEqual(x['frames'][:, 0, 0].tolist(), [1, 3])
             self.assertEqual(x['track'][:, 0, 0].tolist(), [1, 3])
 
 

@@ -1,4 +1,4 @@
-"""Trainer: composition loss, fold leakage, which real clips train, gradient flow, test isolation and exact resume."""
+"""Trainer: composition loss, fold leakage, gradient flow, test isolation and exact resume."""
 import contextlib
 import io
 import json
@@ -52,49 +52,28 @@ class Training(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'crosses folds'):
             sim_folds([dict(split='train', start_group=0), dict(split='validation', start_group=0)])
 
-    def test_only_training_takes_train_and_variants_need_checks(self):
-        folds = dict(train=[1], validation=[2], test=[3]); keys = []; metas = {}
-        for ep in (1, 2, 3):
-            cameras = [dict(kind='head'), dict(kind='second'),
-                       dict(kind='head', look_name='blue', generated=True, source='generated.mp4', source_sha256='hash',
-                            task_preservation_pass=True, task_preservation_source_sha256='hash')]
-            metas[ep] = dict(label=dict(translation='right', roll='upright'), cameras=cameras)
-            keys.extend((ep, v) for v in range(3))
-        self.assertEqual(train.real_training_clips(keys, metas, folds, 'sim_real_cosmos'), [0, 1, 2])
-        self.assertEqual(train.real_training_clips(keys, metas, folds, 'sim_real'), [0, 1])
-        metas[1]['cameras'][2]['task_preservation_source_sha256'] = 'stale'
-        with self.assertRaisesRegex(ValueError, 'task-preservation'):
-            train.real_training_clips(keys, metas, folds, 'sim_real_cosmos')
-        metas[1]['cameras'][2]['task_preservation_source_sha256'] = 'hash'; metas[4] = metas[1]
-        with self.assertRaisesRegex(ValueError, 'Unlisted take'):
-            train.real_training_clips(keys+[(4, 0)], metas, folds, 'sim_real')
-        metas[1]['cameras'][2]['source'] = 'generated_control_edge.mp4'
-        with self.assertRaisesRegex(ValueError, 'Control maps'):
-            train.real_training_clips(keys, metas, folds, 'sim_real_cosmos')
-
-    def test_losses_update_encoder_and_both_readouts(self):
-        torch.manual_seed(5); model = train.TaskHead()
-        x = dict(frames=torch.randn(9, 8, 1408), proj=torch.randn(9, 768), track=torch.randn(9, 8, 5))
+    def test_contrastive_loss_updates_the_head(self):
+        torch.manual_seed(5); model = Head()
+        x = dict(frames=torch.randn(9, 8, 1408), track=torch.randn(9, 8, 5))
+        x2 = dict(frames=x['frames'] + .1*torch.randn(9, 8, 1408), track=x['track'])
         cats = torch.tensor([r['cat'] for r in grid_rows()]); optimizer = torch.optim.AdamW(model.parameters(), lr=.002)
-        z = model(x); before = float(train.factor_loss(model, z, z, cats).detach())
+        before = float(train.contrastive_task_loss(model(x), model(x2), cats).detach())
         for _ in range(5):
-            z = model(x); loss = train.factor_loss(model, z, z, cats); optimizer.zero_grad(); loss.backward()
-            for module in (model.encoder, model.translation, model.roll):
-                grads = [p.grad for p in module.parameters() if p.grad is not None]
-                self.assertTrue(grads and all(torch.isfinite(g).all() for g in grads))
-                self.assertGreater(sum(float(g.abs().sum()) for g in grads), 0)
+            loss = train.contrastive_task_loss(model(x), model(x2), cats); optimizer.zero_grad(); loss.backward()
+            grads = [p.grad for p in model.parameters() if p.grad is not None]
+            self.assertTrue(grads and all(torch.isfinite(g).all() for g in grads))
+            self.assertGreater(sum(float(g.abs().sum()) for g in grads), 0)
             optimizer.step()
-        self.assertLess(float(train.factor_loss(model, model(x), model(x), cats).detach()), before)
-        exported = Head(); exported.load_state_dict(model.encoder.state_dict()); exported.eval(); model.eval()
-        self.assertTrue(torch.equal(exported(x), model(x)))   # head.pt alone reproduces the encoder
+        self.assertLess(float(train.contrastive_task_loss(model(x), model(x2), cats).detach()), before)
+        self.assertTrue(torch.allclose(model(x).norm(dim=-1), torch.ones(9)))   # z has unit length
 
     def test_validation_never_sees_test_episodes(self):
-        rows = grid_rows(5); count = len(rows); model = train.TaskHead().eval()
-        x = dict(frames=torch.zeros(count, 4, 8, 1408), proj=torch.zeros(count, 4, 768), track=torch.zeros(count, 4, 8, 5))
-        x['proj'][:, :, 0] = torch.arange(count, dtype=torch.float32)[:, None]
+        rows = grid_rows(5); count = len(rows); model = Head().eval()
+        x = dict(frames=torch.zeros(count, 4, 8, 1408), track=torch.zeros(count, 4, 8, 5))
+        x['frames'][:, :, 0, 0] = torch.arange(count, dtype=torch.float32)[:, None]
         D = dict(x=x, head=np.tile([True, False, True, False], (count, 1)), look=np.tile([0, 0, 1, 1], (count, 1)))
         observed = []
-        handle = model.encoder.register_forward_pre_hook(lambda module, args: observed.extend(args[0]['proj'][:, 0].tolist()))
+        handle = model.register_forward_pre_hook(lambda module, args: observed.extend(args[0]['frames'][:, 0, 0].tolist()))
         train.validation(model, D, rows, np.arange(18, 36), 'cpu'); handle.remove()
         self.assertEqual(set(observed), set(range(18, 36)))
 
