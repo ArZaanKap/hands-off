@@ -26,20 +26,9 @@
   - arithmetic loss: z(a) − z(b) + z(c) → target task
 - **Policy:** *z* and the block start select one of 16 motion bins. The start alone sets the fine offset. The output is 14 hand waypoints, executed in physics.
 
-## Learned intent vs explicit 3D goal
-
-![Task success: learned intent 85%, explicit goal 76% (exact camera), 77% (2°/2 cm error), 66% (5°/5 cm error)](docs/media/learned_vs_explicit.png)
-
-- **Setup:** same policy, same 432 held-out sim clips.
-- **Explicit baseline:** the block's goal is measured from the video. The 2D track is lifted to the table plane with the camera calibration.
-- **Learned *z*:** 85% success, with no calibration.
-- **Explicit goal:** 76% with an exact camera, 66% with a 5 cm / 5° camera error.
-- **Trade-off:** the explicit goal is better on movement (99 vs 88%) and worse on roll direction (67 vs 94%).
-- **Caveat:** in sim, the roll-direction accuracy of *z* is partly due to a visual cue in the robot's grip. It does not carry over to real clips (see [Failure case](#failure-case-roll-direction-on-real-video)).
-
 ## Structure of the intent space
 
-![t-SNE of z: four clusters, moved/stayed × rolled/not rolled](docs/media/z_clusters.png)
+<img src="docs/media/z_clusters.png" width="480" alt="t-SNE of z: four clusters, moved/stayed × rolled/not rolled">
 
 - **Data:** t-SNE of *z* for 432 held-out sim clips (54 episodes × 8 views).
 - **Result:** four clusters, moved/stayed × rolled/not rolled.
@@ -83,18 +72,6 @@
 - **Same task:** a real clip lies 36° from a sim clip of the same task.
 - **Different task:** it lies 81° from a sim clip of a different task.
 
-## Failure case: roll direction on real video
-
-![Real "roll left" lies 32° from sim "roll right" and 90° from sim "roll left"](docs/media/angles_failure.jpg)
-
-- **Example:** real "roll left" lies closer to sim "roll right" (32°) than to sim "roll left" (90°).
-- **On real clips:**
-  - rolled vs not rolled: 100%
-  - roll direction: 48–52%, chance level
-- **Likely causes (not isolated):**
-  - in 8 masked, low-resolution frames, a left and a right roll of a small block look alike
-  - in sim, the robot's grip gives the direction away
-
 ## Results summary
 
 Policy task success (%), mean over 3 head seeds (range):
@@ -112,10 +89,36 @@ Real test set, per question (outcome correct, %): did it move 90 · which way 71
 - **Pre-registered system:** frozen before recording, it scored 39% on the real test set.
 - **Final system:** chosen afterwards on non-test data only. Its 44% is reported post hoc.
 
-## What did not help
+## Limitations
 
-- **Training the head on real clips:** on the test set, sim-only scored 47% and sim + real scored 35% (nearest-clip readout).
-- **Cosmos-transferred real clips:** they did not improve held-out real takes, and they weakened sim arithmetic.
+### 1. Strong on held-out sim, weaker on real video
+
+- **Held-out sim test set** (432 clips, unseen block starts): 85% task success.
+- **Real test set** (36 clips, 18 takes): 44% task success; chance is 11%.
+- **Why:** the head and the policy train on sim clips only; real clips are used only for evaluation.
+
+### 2. Roll direction on real video is at chance
+
+![Real "roll left" lies 32° from sim "roll right" and 90° from sim "roll left"](docs/media/angles_failure.jpg)
+
+- **Example:** real "roll left" lies closer to sim "roll right" (32°) than to sim "roll left" (90°).
+- **Real test set:** whether the block rolled is 100% correct; which way it rolled is 52%, chance level.
+- **Likely causes (not isolated):**
+  - in 8 masked, low-resolution frames, a left and a right roll of a small block look alike
+  - in sim, the robot's grip gives the direction away
+
+### 3. Narrow setup
+
+- One block and 9 discrete tasks: a 15 cm move left/right or none, a quarter-turn roll left/right or none.
+- For real clips, the block starts from one fixed position in sim. The hand executes its waypoints open loop, without feedback.
+- Real data: one demonstrator, two scenes, 34 takes.
+
+## Future work
+
+- **Roll direction:** more frames and higher resolution around the turn.
+- **Sim-to-real:** more varied sim appearance; adding real clips to head training has not helped so far (real test set, nearest-clip readout: 47% → 35%).
+- **Richer tasks:** continuous goals instead of 9 categories, other objects, a closed-loop policy.
+- **Embodiment:** the same intent vector driving the hand mounted on an arm.
 
 ## Running on new recordings
 
