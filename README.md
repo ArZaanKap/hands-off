@@ -1,110 +1,151 @@
-# Hands Off: Learning Task Intent from Multi-View Video
+# Hands Off: Learning Task Intent from Agent-Masked Video
 
-**Can a robot learn *what* you did to an object, without ever seeing *how* you did it?**
+**Can a robot infer *what* was done to an object from video, without observing *how* it was done?**
 
-I film myself moving a wooden block with two phones and mask myself out of every frame. A model reads the *task* from what happened to the block, and a simulated robot hand does the same task. It never copies my hand motion.
+![Real demonstration, model input with the agent masked, and the simulated hand executing the inferred task](docs/media/hero.gif)
 
-![You do a task, the model reads it, the robot hand does it](docs/media/hero.gif)
+<sub>Development take D15, head phone. The agent is masked before encoding. Robot panels: photoreal render of the inferred task in simulation.</sub>
 
-<sub>A training take (D15), read by a model trained only on simulation that never saw a real video. Robot: the simulated Inspire hand doing the chosen task, rendered photoreal. The held-out test on new recordings is below.</sub>
+## Overview
 
-| | |
+- **Input:** phone video of a person moving a wooden block. The person is masked out of every frame.
+- **Representation:** a frozen video model (Cosmos-Embed1) and a small trained head map each clip to a 64-D intent vector *z*.
+- **Action:** a learned policy maps *z* to a grasp-carry-turn-place motion for a simulated 5-finger Inspire hand (MuJoCo).
+- **Tasks:** 9, from move {left, stay, right} × roll {left, none, right}.
+- **Training data:** simulation only.
+- **Real data:** real clips drive the robot at run time. 16 development takes guided every design decision. 18 later takes form the test set.
+
+## Architecture
+
+![Architecture: input video, agent masking, Cosmos-Embed1, intent head, policy](docs/media/architecture.png)
+
+- **Agent masking (SAM3):** human and robot clips differ only in a grey silhouette. This closes the embodiment gap.
+- **Head (0.84 M parameters):** per-frame Cosmos features and a 2D block track are mapped to *z*, with unit length.
+- **Head losses:**
+  - contrastive loss: same task → small angle
+  - arithmetic loss: z(a) − z(b) + z(c) → target task
+- **Policy:** *z* and the block start select one of 16 motion bins. The start alone sets the fine offset. The output is 14 hand waypoints, executed in physics.
+
+## Learned intent vs explicit 3D goal
+
+![Task success: learned intent 85%, explicit goal 76% (exact camera), 77% (2°/2 cm error), 66% (5°/5 cm error)](docs/media/learned_vs_explicit.png)
+
+- **Setup:** same policy, same 432 held-out sim clips.
+- **Explicit baseline:** the block's goal is measured from the video. The 2D track is lifted to the table plane with the camera calibration.
+- **Learned *z*:** 85% success, with no calibration.
+- **Explicit goal:** 76% with an exact camera, 66% with a 5 cm / 5° camera error.
+- **Trade-off:** the explicit goal is better on movement (99 vs 88%) and worse on roll direction (67 vs 94%).
+- **Caveat:** in sim, the roll-direction accuracy of *z* is partly due to a visual cue in the robot's grip. It does not carry over to real clips (see [Failure case](#failure-case-roll-direction-on-real-video)).
+
+## Structure of the intent space
+
+![t-SNE of z: four clusters, moved/stayed × rolled/not rolled](docs/media/z_clusters.png)
+
+- **Data:** t-SNE of *z* for 432 held-out sim clips (54 episodes × 8 views).
+- **Result:** four clusters, moved/stayed × rolled/not rolled.
+
+### Before and after the head
+
+![t-SNE before (Cosmos-Embed1) and after (z) the head, coloured by task category](docs/media/before_after_head.png)
+
+- **Cosmos-Embed1 alone:** the nearest neighbour shares the task in 0% of clips and the scene in 100%.
+- **Intent vector *z*:** the nearest neighbour shares the task in 83% of clips and the scene in 3%.
+- **Effect:** the head turns a scene-dominated embedding into a task-dominated one.
+
+### Direction
+
+![Same t-SNE, coloured by movement direction and roll direction](docs/media/z_directions.png)
+
+- Within each cluster, movement direction and roll direction are also separated (sim).
+
+## Intent arithmetic
+
+![z(a) − z(b) + z(c): move right + roll right − move right + move left = move left + roll right](docs/media/arithmetic.png)
+
+- **Operation:** remove one task component and add another.
+- **Accuracy:** 33/36 held-out queries return a nearest clip with the target task.
+- **Scene-excluded check:** 34/36 when clips from the query's own scene are excluded.
+- **Baseline:** *z*(c) alone gives 0/36.
+- **Note:** the head is trained with this objective on training starts. These results test generalisation to unseen starts.
+
+## Transfer to real demonstrations
+
+![t-SNE of z: held-out sim clips and real test clips](docs/media/real_on_map.png)
+
+- **Data:** 36 real test clips (18 takes × 2 phones), never used in training.
+- **Result:** 34/36 fall in the cluster of their category.
+- **Unseen scene:** includes 5 takes from an outdoor scene absent from training.
+
+### Vector comparison
+
+![Real test clip vs sim clips: 36° to the same task, 81° to a different task](docs/media/angles_success.jpg)
+
+- **Same task:** a real clip lies 36° from a sim clip of the same task.
+- **Different task:** it lies 81° from a sim clip of a different task.
+
+## Failure case: roll direction on real video
+
+![Real "roll left" lies 32° from sim "roll right" and 90° from sim "roll left"](docs/media/angles_failure.jpg)
+
+- **Example:** real "roll left" lies closer to sim "roll right" (32°) than to sim "roll left" (90°).
+- **On real clips:**
+  - rolled vs not rolled: 100%
+  - roll direction: 48–52%, chance level
+- **Likely causes (not isolated):**
+  - in 8 masked, low-resolution frames, a left and a right roll of a small block look alike
+  - in sim, the robot's grip gives the direction away
+
+## Results summary
+
+Policy task success (%), mean over 3 head seeds (range):
+
+| Evaluation set | Success |
 |---|---|
-| **Input** | Two ordinary phone videos (head-mounted + handheld) of a person moving a block |
-| **Output** | One of 9 tasks (move left / stay / right × roll left / none / right), executed by a floating 5-finger Inspire hand in MuJoCo |
-| **Model** | Frozen [Cosmos-Embed1](https://huggingface.co/nvidia/Cosmos-Embed1-448p) video features + a 1.2 M-parameter head |
-| **Training data** | 2,592 photoreal sim clips + 16 of my own takes (32 phone clips + 54 approved Cosmos-Transfer restylings) |
-| **Test** | 18 new takes recorded after the models were frozen: **[pending, 13 Oct]** |
+| Sim, held-out starts (432 clips) | 85 (85–85) |
+| Intent arithmetic (36 queries) | 98 (97–100) |
+| Real development set (16 takes, 32 clips) | 64 (59–69) |
+| Real test set (18 takes, 36 clips) | 44 (36–53) |
+| Chance | 11 |
 
-## The idea
+Real test set, per question (outcome correct, %): did it move 90 · which way 71 · did it roll 100 · which way it rolled 52.
 
-A human hand and a robot hand look nothing alike, and neither do my kitchen and a simulator. So I **mask the agent out of every frame** (grey silhouette, both for me and for the robot). The model sees only the block, the table and a grey blob. What is left to learn is *what happened to the object*, and that is the same for a human and a robot. Hence "hands off".
+- **Pre-registered system:** frozen before recording, it scored 39% on the real test set.
+- **Final system:** chosen afterwards on non-test data only. Its 44% is reported post hoc.
 
-The model maps each clip to a 64-d **intent vector** and is trained so that tasks compose:
+## What did not help
 
-![z(A) − z(B) + z(C) lands on the right task, in a different room](docs/media/task_arithmetic.jpg)
+- **Training the head on real clips:** on the test set, sim-only scored 47% and sim + real scored 35% (nearest-clip readout).
+- **Cosmos-transferred real clips:** they did not improve held-out real takes, and they weakened sim arithmetic.
 
-<sub>"move right + roll right" − "move right" + "move left" → "move left + roll right". The answer is a different start, in a different room and material. Held-out sim starts; `sim_seed0`.</sub>
+## Reproduce
 
-The 9 tasks the robot hand can execute, from the person's viewpoint (one start and room, rendered photoreal):
-
-<img src="docs/media/robot_tasks.gif" width="600" alt="The 9 tasks executed by the Inspire hand">
-
-## Results
-
-**Held-out test on new recordings** (18 takes, 2 per task type, never trained on and never used to choose anything): **[pending: recorded 13 Oct]**
-
-**Fair test on my own takes** (each of the 16 takes held out in turn; 32 clips; seed 0; % correct):
-
-| model trained on | move + roll both right | move right | roll right |
-|---|---|---|---|
-| sim only (never saw a real video) | 69 | 91 | 78 |
-| sim + my takes | 66 | 88 | 78 |
-| sim + my takes + Cosmos restylings | 62 | 84 | 78 |
-| chance | 11 | 33 | 33 |
-
-**Task arithmetic** (held-out sim starts, answer from a different look; 12 queries per family × 3 seeds):
-
-| family | example | sim only | sim + takes | + Cosmos | C alone |
-|---|---|---|---|---|---|
-| remove the move, keep the roll | right+roll − right + stay → roll in place | 97 | 67 | 58 | 0 |
-| remove the roll, keep the move | right+roll − roll + stay → right | 100 | 100 | 100 | 0 |
-| swap the move direction | right+roll − right + left → left+roll | 100 | 94 | 89 | 0 |
-
-**What these say:**
-- **Move left / stay / right transfers from sim to real:** 84–91% on real clips, from a model that never saw one.
-- The head is *trained* with arithmetic on the training starts. The table shows that it generalises to new starts and looks, not that it emerges on its own.
-
-## How it works
-
-```
-two phones ──► sync by audio ──► SAM3: mask person/hand/arm grey, find the block ──► crop centred on the block
-          ──► 8 frames ──► Cosmos-Embed1 (frozen) + 2D block track ──► head ──► z (64-d)
-          ──► nearest simulated clip ──► its task ──► Inspire hand picks, carries, turns and places the block
-```
-
-1. **Simulation.** 36 random block starts × 9 tasks: a floating Inspire hand does each task with one fixed pick-carry-turn-place motion and a human-like grip. Every episode passes physics checks (no table penetration, gentle release, no twist). Each episode is filmed by 4 phone-like cameras (one where my head is, three random) and rendered photoreal with NVIDIA's RTX renderer (ovrtx), in 72 random rooms and materials:
-   ![Photoreal sim looks](docs/media/sim_looks.jpg)
-2. **My data.** 16 takes × 2 phones; I confirmed every label by watching both videos. Cosmos-Transfer2.5 restyles each clip (new table colour and sleeve). I watched all 64 generated videos in full and approved 55; 54 of those also pass an automatic check that the block still does the same task.
-3. **Training.** Same-task clips from different rooms pull together, two small readouts predict the move and the roll, and A − B + C must land nearest a clip of the composed task. In the real stages, my labelled clips sit with same-task sim clips. Each stage has a fixed epoch count, chosen by leave-one-take-out before the test. There are 3 stages (sim / + takes / + Cosmos) × 3 seeds.
-4. **Acting.** The robot's motion is a scripted primitive per task. What is learned is *which task*, from the video.
-
-## What didn't work
-
-- **The roll direction does not transfer to real video.** "Rolled vs upright" is reliable, but for an in-place roll "left vs right" is close to a coin flip (7/14 held-out clips). In sim it is easy. Likely cause (not yet tested): in 8 masked, low-resolution frames of a small block, a left turn and a right turn look nearly the same.
-- **My own data did not beat simulation alone.** Adding my 16 labelled takes, and then their Cosmos restylings, did not improve held-out takes (69 → 66 → 62%), and it weakened the sim arithmetic (97 → 67 → 58%). Without labels it was worse: training "both phones of a take must agree" collapsed every real clip to a single task.
-
-## Run it
+> The final head and policy are being ported from the development workbench. The commands below cover setup, the sim training set and real-data preparation.
 
 Tested on an aarch64 NVIDIA DGX Spark (GB10, CUDA 13), Python 3.12, [uv](https://docs.astral.sh/uv/).
 
-| step | command | time |
+| Step | Command | Time |
 |---|---|---|
-| setup (3 venvs, hand model, HDRIs) | `bash scripts/setup.sh` | downloads |
-| build the sim training set | `bash scripts/build_sim.sh` | ~2.5 h |
-| sync phone takes for review | `.venv-spider/bin/python -m handsoff.real.prepare sync --raw RAW --review DIR` | ~5 s per take |
-| mask, crop, embed the takes | `bash scripts/prepare_real.sh ...` (see header) | ~1 min per take |
-| train 9 heads + arithmetic | `bash scripts/train.sh` | ~1.5 h |
-| held-out test → robot | `bash scripts/run_test.sh RAW` | ~1 min per take |
-| unit tests | `.venv-spider/bin/python -m unittest discover -s tests -t .` | 2 s |
+| Setup (3 venvs, hand model, HDRIs) | `bash scripts/setup.sh` | downloads |
+| Build the sim training set | `bash scripts/build_sim.sh` | ~2.5 h |
+| Sync two-phone takes | `.venv-spider/bin/python -m handsoff.real.prepare sync --raw RAW --review DIR` | ~5 s per take |
+| Mask, crop, embed takes | `bash scripts/prepare_real.sh ...` (see header) | ~1 min per take |
+| Unit tests | `.venv-spider/bin/python -m unittest discover -s tests -t .` | 2 s |
 
-Each script runs detached, writes a log, and stops at the first failed step. `python -m handsoff.rules` checks a dataset against the project's rules (`docs/decisions.md`) before any training.
+Each script runs detached, writes a log and stops at the first failed step. `python -m handsoff.rules` checks a dataset against the design rules (`docs/decisions.md`) before training.
 
-**[pending: data and model download, recording layout]**
-
-## Repo map
+## Repository map
 
 ```
 handsoff/
   sim/     scene.py (MuJoCo scene) · primitive.py (the 9 robot motions) · grip.py (grasp search)
            dataset.py (sim training set) · render.py, geometry.py (cameras, masks) · ovrtx.py, photoreal.py (RTX looks)
   real/    sync.py (two-phone audio sync) · sam3.py (masks, block) · framing.py (crop, shared with sim)
-           prepare.py (takes → model inputs) · cosmos.py (restylings) · review_gate.py (human approval gate)
+           prepare.py (takes → model inputs) · cosmos.py (Cosmos transfer) · review_gate.py (human approval gate)
   model/   embed.py (Cosmos-Embed1) · head.py (intent head) · tasks.py (9 tasks, composition) · data.py
-           train.py · choose_epochs.py · evaluate.py (clip → task → robot) · arithmetic.py
+           train.py · choose_epochs.py · evaluate.py · arithmetic.py
   rules.py automatic checks of the design rules
-scripts/   one shell script per stage (table above)
+scripts/   one shell script per stage
 config/    grip parameters, confirmed labels, take split, Cosmos review log, track-noise models
-tests/     28 unit tests: robot geometry and grip, task composition, trainer leakage and resume, approval gate
-docs/      decisions.md (every design rule and why), media/
+tests/     unit tests: robot geometry and grip, task composition, trainer leakage and resume, approval gate
+docs/      decisions.md (design rules and rationale), media/
 ```
