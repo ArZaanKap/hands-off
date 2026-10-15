@@ -1,19 +1,16 @@
-# Hands Off: Learning Task Intent from Agent-Masked Video
+# Learning Task Intent from Multi-View Video
 
-**Can a robot infer *what* was done to an object from video, without observing *how* it was done?**
+**Can a robot trained only in simulation infer *what* was done to an object from video, without observing *how* it was done, and generalise to real human demonstrations?**
 
 ![Real demonstration, model input with the agent masked, and the simulated hand executing the inferred task](docs/media/hero.gif)
 
-<sub>Development take D15, head phone. The agent is masked before encoding. Robot panels: photoreal render of the inferred task in simulation.</sub>
-
 ## Overview
 
-- **Input:** phone video of a person moving a wooden block. The person is masked out of every frame.
-- **Representation:** a frozen video model (Cosmos-Embed1) and a small trained head map each clip to a 64-D intent vector *z*.
-- **Action:** a learned policy maps *z* to a grasp-carry-turn-place motion for a simulated 5-finger Inspire hand (MuJoCo).
-- **Tasks:** 9, from move {left, stay, right} × roll {left, none, right}.
-- **Training data:** simulation only.
-- **Real data:** real clips drive the robot at run time. 16 development takes guided every design decision. 18 later takes form the test set.
+- **Input:** multi-view video of a block being moved, with the agent (person or robot hand) masked out.
+- **Model:** frozen Cosmos-Embed1 + a small trained head → 64-D intent vector *z*.
+- **Action:** a learned policy turns *z* into a motion for a simulated 5-finger hand (MuJoCo).
+- **Tasks:** 9 = move {left, stay, right} × roll {left, none, right}.
+- **Training:** sim only. **Evaluation:** held-out sim and real human demonstrations.
 
 ## Architecture
 
