@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# The user's phone takes -> model inputs, after `prepare sync` and the user's label confirmation (see README):
-# SAM3 masks, crops and block tracks (+ approved Cosmos variants), Cosmos-Embed1 features, user-rule checks.
+# Phone takes -> model inputs, after `prepare sync` and label confirmation (see docs/own_recordings.md):
+# SAM3 masks, crops and block tracks (+ approved Cosmos variants), then Cosmos-Embed1 features.
 # Usage: bash scripts/prepare_real.sh RAW REVIEW OUT LABELS TAG [COSMOS]
 #   training takes: bash scripts/prepare_real.sh data/raw/train_takes results/train_inputs data/real/demos3_approved_rgb_v3 \
 #                        config/labels_train.json demos3 results/cosmos_demos3_v1

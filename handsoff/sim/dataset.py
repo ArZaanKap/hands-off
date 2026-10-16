@@ -1,14 +1,14 @@
 """Build the sim training set: 36 starts x the nine tasks, floating Inspire hand, phone-like cameras (MuJoCo part).
 
 Stages, in order (each resumes; run with MUJOCO_GL=egl):
-  physics  every start x task with the verified grip and motion (config/grip_v3.json, R20); all must pass gently
+  physics  every start x task with the verified grip and motion (config/grip_v3.json); all must pass gently
   window   the model sees 8 frames at t = 3, 4, ..., 10 s (mid-roll included); the full trajectory is kept
   cameras  per start: a head phone (the person leans over the table, 50-75 deg down) and three free phones, one per
-           third of MuJoCo azimuth 30-330 (never behind the person); redrawn until the block stays in view (R03, R05, R06)
+           third of MuJoCo azimuth 30-330 (never behind the person); redrawn until the block stays in view
   render   848x478 frames -> the real clips' start-centred crop -> 448 px RGB + agent masks (flat looks, diagnostic)
-  tracks   block tracks from the rendered block masks with the real clips' features() (R04)
+  tracks   block tracks from the rendered block masks with the real clips' features()
 Whole starts belong to one fold: 30 train, 6 validation. The photoreal RGB that the model trains on is made from these
-episodes by sim/photoreal.py (R16).
+episodes by sim/photoreal.py.
 Usage: python -m handsoff.sim.dataset --stage STAGE [--out DIR] [--limit N]
 """
 import argparse
@@ -30,13 +30,13 @@ from handsoff.sim.scene import SceneConfig, build
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = 'intent_tasks_train_v3'
 GRIP = ROOT/'config/grip_v3.json'
-# Cameras behave like the user's phones: 848x478 landscape frames, then the same square crop as the real clips.
+# Cameras behave like the recording phones: 848x478 landscape frames, then the same square crop as the real clips.
 # Unknown phone settings are randomised.
 PHONE = dict(width=848, height=478, hfov=(60., 75.), height_m=(.12, .28), distance=(.30, .45),
              # where the phone puts the block's start in the raw frame (0-1 across, 0-1 down): the range measured in
              # the 32 original phone views; 0.5, 0.5 = aimed at the block
              aim_x=(.32, .70), aim_y=(.33, .53),
-             # head phone: the person leans over the table, 50-75 deg down (user, 12 Oct); never inside/behind the
+             # head phone: the person leans over the table, 50-75 deg down; never inside/behind the
              # proxy head (x >= EYE x)
              head_elevation=(-75., -50.), head_distance=(.45, .60), head_azimuth_jitter=10.)
 FREE_SECTORS = ((30., 130.), (130., 230.), (230., 330.))
@@ -90,7 +90,7 @@ def aim(cam, rng):
 
 def phone_camera(rng, draw, points, clear, tries=1000):
     """Redraw the unknown settings until the block stays in view in all nine motions and is not hidden by the hand
-    at the start, as the user framed the real phones. Returns the camera and the number of draws."""
+    at the start, as the real phones were framed. Returns the camera and the number of draws."""
     for n in range(1, tries+1):
         cam = aim(dict(draw(), fovy=vertical_fovy(rng.uniform(*PHONE['hfov']))), rng)
         if in_frame(points, cam) and clear(cam):
@@ -103,7 +103,7 @@ def initialise(out, grip):
     if not record.get('gentle') or record.get('verified_cases') != 45:
         raise ValueError('Need the verified gentle grip')
     if record.get('motion') != 'clearance_side_human' or 'left_params' not in record:
-        raise ValueError('Need the verified human-like roll-left grip (R20)')
+        raise ValueError('Need the verified human-like roll-left grip')
     rng = np.random.default_rng(2026101201)
     groups = []
     for i in range(36):

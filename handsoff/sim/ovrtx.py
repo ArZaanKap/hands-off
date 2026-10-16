@@ -20,7 +20,7 @@ ASSETS = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets
 SCENES = {"simple_room": f"{ASSETS}/Isaac/Environments/Simple_Room/simple_room.usd",
           "office": f"{ASSETS}/Isaac/Environments/Office/office.usd",
           "decor_wood": f"{ASSETS}/NVIDIA/Assets/Scenes/Templates/LookDev/Decor_Wood.usd"}
-# 9 Oct survey (results/ovrtx_scenes): these three work at the default placement. Kitchens, packing_table,
+# These three rooms work at the default placement. Kitchens, packing_table,
 # galileo and the exhibition hall put walls/counters where our table is; Hospital timed out (> 180 s).
 HDRIS = {"exhibition_hall": f"{ASSETS}/NVIDIA/Assets/Skies/Indoor/ZetoCGcom_ExhibitionHall_Interior1.hdr",
          "noon_grass": f"{ASSETS}/NVIDIA/Assets/Skies/Clear/noon_grass_4k.hdr"}
@@ -500,28 +500,26 @@ def hsv(h, s, v):
     return tuple(colorsys.hsv_to_rgb(h, s, v))
 
 
-# Curated 9 Oct after the user's review of the first MDL looks ("blocks don't look really good; tables some good,
-# some bad"): only realistic presets, then cut again after the survey (below). Base presets take OmniPBR texture_scale/rotate; vMaterials_2 presets are used
+# Only realistic presets, chosen by visual review of rendered samples. Base presets take OmniPBR texture_scale/rotate; vMaterials_2 presets are used
 # as authored (their parameters differ), picked by variant name.
 V2 = "vMaterials_2"
 TABLE_BASE = ["Wood/Oak", "Wood/Ash", "Wood/Birch", "Wood/Cherry", "Wood/Walnut", "Wood/Mahogany", "Stone/Marble_Smooth",
               "Stone/Granite_Light", "Stone/Granite_Dark"]
-# Pools after the user's review of results/ovrtx_v4_preview/survey_{tables,blocks}.png (9 Oct, all cuts approved):
-# dropped black_galaxy granite (mirror-black), the default brown Granite_Polished, 2 of 3 identical laminate oaks,
+# Removed after the visual review: black_galaxy granite (mirror-black), the default brown Granite_Polished, 2 of 3 identical laminate oaks,
 # 2 of 4 painted tops; blocks: pale eggshells (teal/lime/leaf, close to the mask grey), eggshell burnt red (blotches),
 # all chalk paints (near-black or pale), hammer brilliant blue (near-black).
 TABLE_V2 = [(f"{V2}/Wood/Laminate_Oak", "Laminate_Oak")] + \
            [(f"{V2}/Stone/Granite_Polished", n) for n in ("caledonia", "tan_brown", "ice_kynite")] + \
            [(f"{V2}/Stone/Terrazzo", n) for n in ("Terrazzo", "Terrazzo_Dry_Matt", "Terrazzo_Diffuse_Clean", "Terrazzo_Shiny_Clean")] + \
            [(f"{V2}/Stone/Stone_Mediterranean", n) for n in ("Stone_Mediterranean", "Stone_Mediterranean_Matte")] + \
-           [(f"{V2}/Paint/Paint_Eggshell", "Paint_Eggshell_Vanilla")]   # Ash cut 9 Oct 22:15: same grey as the mask fill
+           [(f"{V2}/Paint/Paint_Eggshell", "Paint_Eggshell_Vanilla")]   # no Ash: the same grey as the mask fill
 BLOCK_V2 = [(f"{V2}/Plastic/Polypropylene_Opaque", f"Polypropylene_{c}") for c in (
                "Red", "Yellow", "Dark_Orange", "Blue", "Dark_Blue", "Sky_Blue", "Green", "Dark_Green", "Lime_Green", "Teal",
                "Magenta", "Purple")] + \
            [(f"{V2}/Paint/Paint_Eggshell", f"Paint_Eggshell_{c}") for c in ("Denim", "Sunny")] + \
            [(f"{V2}/Paint/Hammer_Paint", f"Hammer_Paint_{c}") for c in ("Red", "Dark_Red", "Green")]
-BLOCK_WOOD = ["Wood/Oak"]   # 9 Oct: real block is light pine-like wood; Birch/Ash rendered near-white (cut 22:05)
-# Approximate hues (0-1) so the block never matches the table (user, 9 Oct 22:00). None = neutral grey/white/black.
+BLOCK_WOOD = ["Wood/Oak"]   # the real block is light pine-like wood; Birch/Ash render near-white
+# Approximate hues (0-1) so the block never matches the table. None = neutral grey/white/black.
 BLOCK_HUE = {"Red": 0.0, "Dark_Red": 0.0, "Dark_Orange": 0.07, "Yellow": 0.15, "Sunny": 0.14, "Lime_Green": 0.25,
              "Green": 0.33, "Dark_Green": 0.36, "Teal": 0.48, "Sky_Blue": 0.56, "Denim": 0.6, "Blue": 0.62,
              "Dark_Blue": 0.65, "Purple": 0.78, "Magenta": 0.85}
@@ -570,7 +568,7 @@ def clash(block, table):
 
 
 def sample_look(rng):
-    """One look. Table: 20% plain saturated paint of any hue (the user's real table is lime green), else half Base
+    """One look. Table: 20% plain saturated paint of any hue (the real table is lime green), else half Base
     wood/stone presets (random grain scale/rotation), half vMaterials_2 presets (laminate oak, polished granites,
     terrazzo, Mediterranean stone, eggshell paint), resampled until its hue clearly differs from the block's. Block: 30% oak (the real block is light pine-like wood), else a
     coloured vMaterials_2 preset (polypropylene, eggshell/hammer paint), never grey like the mask fill. Floor (seen
@@ -586,7 +584,7 @@ def sample_look(rng):
         plain(hsv(rng.random(), rng.uniform(0, 0.4), rng.uniform(0.15, 0.6)), float(rng.uniform(0.5, 1.0)))
     return dict(
         scene=str(rng.choice(sorted(SCENES))) if rng.random() < P_ROOM else None,
-        scene_yaw=float(rng.uniform(-20, 20)),   # rooms were checked at yaw 0; at random yaw decor_wood's wall blocked cameras (9 Oct)
+        scene_yaw=float(rng.uniform(-20, 20)),   # rooms were checked at yaw 0; at random yaw decor_wood's wall blocked cameras
         hdri=str(rng.choice(HDRI_POOL)),
         sun_az=float(rng.uniform(0, 360)), sun_el=float(rng.uniform(25, 80)),
         sun=float(rng.uniform(300, 2500)), dome=float(rng.uniform(150, 1000)),

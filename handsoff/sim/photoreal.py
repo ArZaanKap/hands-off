@@ -1,4 +1,4 @@
-"""Photoreal (ovrtx) RGB for the sim dataset (rule R16), reusing its exact poses, cameras and crops.
+"""Photoreal (ovrtx) RGB for the sim dataset, reusing its exact poses, cameras and crops.
 
 The flat MuJoCo render (sim/dataset.py) fixed every phone camera and its crop window. Here:
   export (.venv-spider, CPU): recorded qpos -> ep*/photoreal/scene.usda.gz, 848x478 cameras with each lens.

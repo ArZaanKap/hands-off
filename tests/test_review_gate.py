@@ -1,4 +1,4 @@
-"""Cosmos videos reach a model only with the user's approval of exactly those bytes (R01); control maps never do."""
+"""Cosmos videos reach a model only with an approved review of exactly those bytes; control maps never do."""
 import hashlib
 import json
 import tempfile

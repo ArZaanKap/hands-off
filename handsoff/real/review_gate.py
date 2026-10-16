@@ -1,4 +1,5 @@
-"""Every generated Cosmos video needs the user's explicit full-video approval before any model use (R01).
+"""Every generated Cosmos video needs an explicit full-video human approval before any model use.
+Used only for the control experiment in docs/tried_and_dropped.md; the final system uses no generated video.
 
 config/cosmos_review.json holds the decisions: variants[pair][look] = {status: approved/rejected/pending, source,
 source_sha256}. An approval only counts while the file still has that hash; Cosmos control maps never count.

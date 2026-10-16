@@ -8,7 +8,7 @@ source "$(dirname -- "$0")/common.sh"
 export SIM=${1:-data/sim/intent_tasks_train_v3} REAL=${2:-data/real/demos3_approved_rgb_v3}
 chain() {
   R=(); if [[ -d $REAL ]]; then R=(--real "$REAL"); else echo "no real development set at $REAL: sim tests only"; fi
-  echo "START $(date -Is) rules"; spider -m handsoff.rules --sim "$SIM" "${R[@]}"
+  echo "START $(date -Is) checks"; spider -m handsoff.checks --sim "$SIM" "${R[@]}"
   echo "START $(date -Is) plans"; spider -m handsoff.policy.policy plans --sim "$SIM" --plans results/final/plans.npz
   for seed in 0 1 2; do
     O=results/final/seed$seed

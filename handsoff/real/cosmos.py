@@ -1,11 +1,12 @@
-"""Cosmos-Transfer2.5 appearance variants of the user's takes: two new looks (table colour, sleeve) per original clip.
+"""Cosmos-Transfer2.5 appearance variants of the development takes: two new looks (table colour, sleeve) per clip.
+Used only for the control experiment in docs/tried_and_dropped.md; the final system uses no generated video.
 
-Every generated video needs the user's full-video approval before any model use (R01). Steps:
+Every generated video needs a full-video human review before any model use. Steps:
   specs   (CPU) one generation spec per original phone clip x look, with a prompt describing the take's task:
           COSMOS/specs/*.json + COSMOS/manifest.json. Generate with scripts/run_cosmos.sh COSMOS.
   review  (CPU) for each generated video: a side-by-side MP4 (original | generated, full length) and a 16-frame
-          sheet in COSMOS/review/, and COSMOS/review_pending.json listing every video's hash. The user watches each
-          one; their decisions go into config/cosmos_review.json (status approved/rejected + the video's sha256).
+          sheet in COSMOS/review/, and COSMOS/review_pending.json listing every video's hash. A reviewer watches each
+          one; the decisions go into config/cosmos_review.json (status approved/rejected + the video's sha256).
 Approved variants enter a dataset through `prepare inputs --cosmos COSMOS`, which also runs the automatic
 task-preservation check below (block found at start and end, same place as in the original, distinct from the table).
 Usage: python -m handsoff.real.cosmos {specs|review} --data DATA --cosmos COSMOS

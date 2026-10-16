@@ -71,5 +71,5 @@
   "min_clearance_mm": 0.0,
   "failures": []
  },
- "note": "R20 (user 12 Oct): roll left uses its own grasp from the person's side (clearance_side_human). Roll right and upright grasps unchanged from gentle_release_v1."
+ "note": "Roll left uses its own grasp from the person's side (clearance_side_human). Roll right and upright grasps unchanged from gentle_release_v1."
 }

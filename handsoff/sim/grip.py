@@ -1,8 +1,8 @@
-"""Search the human-like roll-left grasp (rule R20; CPU, cross-entropy method over GraspParams + bank_extra).
+"""Search the human-like roll-left grasp (CPU, cross-entropy method over GraspParams + bank_extra).
 
-The user's idea as the warm start: the roll-right side grasp rotated 180 deg about the block's forward axis, so the
+Warm start: the roll-right side grasp rotated 180 deg about the block's forward axis, so the
 wrist stays on the person's side. The search may also tilt the palm onto the block's upper edge (bank_extra) with the
-fingers over the top, like the user's own roll-left grip. Each candidate is scored on four roll-left cases by twist,
+fingers over the top, as in the demonstrator's roll-left grip. Each candidate is scored on four roll-left cases by twist,
 position, lift, table penetration, release height and touchdown speed (the full gentle objective).
 The roll-right and upright grasps in config/grip_v2.json came from earlier searches of the same kind.
 The chosen candidate went into config/grip_v3.json as left_params; sim/dataset.py's physics stage then checks every
@@ -108,7 +108,7 @@ def main():
             if any(h['stage'] == name for h in result['history']):
                 continue
             if not result['candidates']:
-                # the user's warm start: roll-right grasp rotated about the forward axis, hand height kept
+                # warm start: roll-right grasp rotated about the forward axis, hand height kept
                 right = np.r_[json.loads(a.warm_start.read_text())['params'], 0.]
                 mirrored = right.copy(); mirrored[1] = -right[1]; mirrored[3] = -right[3]
                 seeds = [np.clip(mirrored, lo, hi), np.clip(right, lo, hi)]

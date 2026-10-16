@@ -1,7 +1,6 @@
 {
   "schema": "cosmos_human_review_v1",
-  "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-  "statement": "yes others approved from cosmos demos3 v1 out",
+  "note": "Full-video review of the Cosmos-transferred development clips (control experiment only; the final system uses no generated video). Only approved videos whose file hash still matches can enter a dataset.",
   "counts": {
     "approved": 55,
     "rejected": 9,
@@ -14,22 +13,14 @@
         "source": "results/cosmos_demos3_v1/out/D01_head_grey_laminate.mp4",
         "source_sha256": "5b4d5c0d257d9639180947dcbb5614317c6796f6d16d900a50ea8f33e367d520",
         "media_role": "generated_rgb",
-        "review_id": "N01",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N01"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D01_head_light_blue.mp4",
         "source_sha256": "c146ef1442721f06ec93b9eaa5e899cfd0c82e5b4988713292562143937ef443",
         "media_role": "generated_rgb",
-        "review_id": "N02",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N02"
       }
     },
     "demos3:D01:second": {
@@ -38,22 +29,14 @@
         "source": "results/cosmos_demos3_v1/out/D01_second_grey_laminate.mp4",
         "source_sha256": "2a249c526f08d096a57bdb1503507410653f2430a110f1730875c2cae985ef15",
         "media_role": "generated_rgb",
-        "review_id": "N03",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N03"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D01_second_light_blue.mp4",
         "source_sha256": "261d238a4534a5d0a747b989a9cbde0969a579588c6c2762269c2882a3d9b219",
         "media_role": "generated_rgb",
-        "review_id": "N04",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N04"
       }
     },
     "demos3:D02:head": {
@@ -62,22 +45,14 @@
         "source": "results/cosmos_demos3_v1/out/D02_head_grey_laminate.mp4",
         "source_sha256": "59b3192ab2ca7707fdbf35a7762f43c952f2b99e3968e8893dba973d91bc14c7",
         "media_role": "generated_rgb",
-        "review_id": "N05",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N05"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D02_head_light_blue.mp4",
         "source_sha256": "6168a3525ba66e2a1dc93da07f5f7a9c8dd63607cf0078ba755f363fad9eefd1",
         "media_role": "generated_rgb",
-        "review_id": "N06",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N06"
       }
     },
     "demos3:D02:second": {
@@ -86,22 +61,14 @@
         "source": "results/cosmos_demos3_v1/out/D02_second_grey_laminate.mp4",
         "source_sha256": "94299a4f43379d434cb194c52bb7f0c22090dea7255115b790942de4b7383946",
         "media_role": "generated_rgb",
-        "review_id": "N07",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N07"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D02_second_light_blue.mp4",
         "source_sha256": "5655326cb9040d4eae33344fc3dc585bbd57a4891595e3089ee96ca18aa4fa69",
         "media_role": "generated_rgb",
-        "review_id": "N08",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N08"
       }
     },
     "demos3:D03:head": {
@@ -110,22 +77,14 @@
         "source": "results/cosmos_demos3_v1/out/D03_head_grey_laminate.mp4",
         "source_sha256": "a202d77d900b78ea6b19fdd701dd1aa4b9b3f7f12d40a1ed6e117ef7302a36f0",
         "media_role": "generated_rgb",
-        "review_id": "N09",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N09"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D03_head_light_blue.mp4",
         "source_sha256": "e934e9df25aa610d7f81ad9616059022b23ac2a5e47af4ab2ab40129df3949fb",
         "media_role": "generated_rgb",
-        "review_id": "N10",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N10"
       }
     },
     "demos3:D03:second": {
@@ -134,22 +93,14 @@
         "source": "results/cosmos_demos3_v1/out/D03_second_grey_laminate.mp4",
         "source_sha256": "10fe8925372b44f746f693cff28a558c1162191b8e2401b73b32e3ab3274f885",
         "media_role": "generated_rgb",
-        "review_id": "N11",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N11"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D03_second_light_blue.mp4",
         "source_sha256": "4ea044d782e64ef94b95c48eb2e9c49a4f537b9ef931f06e46b385dc07a39547",
         "media_role": "generated_rgb",
-        "review_id": "N12",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N12"
       }
     },
     "demos3:D05:head": {
@@ -158,22 +109,14 @@
         "source": "results/cosmos_demos3_v1/out/D05_head_grey_laminate.mp4",
         "source_sha256": "465f1930b9b242cc6471a27201a48fa216d11d7423fb94559ce24729966d9b4d",
         "media_role": "generated_rgb",
-        "review_id": "N13",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N13"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D05_head_light_blue.mp4",
         "source_sha256": "40bdffa5201e1e972da715b26801ddee65e8b562a48387c599263132c2cea9f3",
         "media_role": "generated_rgb",
-        "review_id": "N14",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N14"
       }
     },
     "demos3:D05:second": {
@@ -182,22 +125,14 @@
         "source": "results/cosmos_demos3_v1/out/D05_second_grey_laminate.mp4",
         "source_sha256": "2a7ee5dc190cd9ca8870010d21ec942cfd853032971b6e5513f15d197d723322",
         "media_role": "generated_rgb",
-        "review_id": "N15",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N15"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D05_second_light_blue.mp4",
         "source_sha256": "2f3fe6c6565881341fde110f12cc70d38de2d2d201c271e6e43e0f22e240ab82",
         "media_role": "generated_rgb",
-        "review_id": "N16",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N16"
       }
     },
     "demos3:D06:head": {
@@ -206,22 +141,14 @@
         "source": "results/cosmos_demos3_v1/out/D06_head_grey_laminate.mp4",
         "source_sha256": "a33ae4a564d7d7413d58528c4a61e9164fc34d7cfd9a5a53e54cc1a547270fe7",
         "media_role": "generated_rgb",
-        "review_id": "N17",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N17"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D06_head_light_blue.mp4",
         "source_sha256": "07e03e6a25b24013c5a378c603ac9ffe078fc7f20b9e80047b82436415a316ba",
         "media_role": "generated_rgb",
-        "review_id": "N18",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N18"
       }
     },
     "demos3:D06:second": {
@@ -230,22 +157,14 @@
         "source": "results/cosmos_demos3_v1/out/D06_second_grey_laminate.mp4",
         "source_sha256": "bf5ded47388582f58b38d3e53620f372c5db29c1ac6fb5994cac9a2545f5e89e",
         "media_role": "generated_rgb",
-        "review_id": "N19",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N19"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D06_second_light_blue.mp4",
         "source_sha256": "27075f490e818229f66838c8e9423aa6c4eac9c0d13857ab9d17be30c0b6262c",
         "media_role": "generated_rgb",
-        "review_id": "N20",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N20"
       }
     },
     "demos3:D07:head": {
@@ -254,22 +173,14 @@
         "source": "results/cosmos_demos3_v1/out/D07_head_grey_laminate.mp4",
         "source_sha256": "61466cff65184dd5e2ad802dc6deb1e850c846a37d514085cfb22e942bc6de9d",
         "media_role": "generated_rgb",
-        "review_id": "N21",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N21"
       },
       "light_blue": {
         "status": "rejected",
         "source": "results/cosmos_demos3_v1/out/D07_head_light_blue.mp4",
         "source_sha256": "73549850b6b7c950ceb117f6452e7a59439f3d66eaf3c0d01685bab5019b2746",
         "media_role": "generated_rgb",
-        "review_id": "N22",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N22"
       }
     },
     "demos3:D07:second": {
@@ -278,22 +189,14 @@
         "source": "results/cosmos_demos3_v1/out/D07_second_grey_laminate.mp4",
         "source_sha256": "fde89aa60f1a0d8d7ae158e7b5a00678d933ba62a1d291c6e5200ecfc0409df6",
         "media_role": "generated_rgb",
-        "review_id": "N23",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N23"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D07_second_light_blue.mp4",
         "source_sha256": "c57217f106f400571279ff234a645826efc6940ed697cc9e6d8b5a250b3b67f7",
         "media_role": "generated_rgb",
-        "review_id": "N24",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N24"
       }
     },
     "demos3:D08:head": {
@@ -302,22 +205,14 @@
         "source": "results/cosmos_demos3_v1/out/D08_head_grey_laminate.mp4",
         "source_sha256": "f642e2c2a9945df34eb9a5288048ca488be064dd50f3cb456b6d4ec469553520",
         "media_role": "generated_rgb",
-        "review_id": "N25",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N25"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D08_head_light_blue.mp4",
         "source_sha256": "770cd5eda2c8070702d741750cb16359cbc7b63a8843fdfc32eddcb6be12735e",
         "media_role": "generated_rgb",
-        "review_id": "N26",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N26"
       }
     },
     "demos3:D08:second": {
@@ -326,22 +221,14 @@
         "source": "results/cosmos_demos3_v1/out/D08_second_grey_laminate.mp4",
         "source_sha256": "f437cdee8cafbef2b67043450b6a6e746ff17f0fcac7fb6b0d22e824e49d8be4",
         "media_role": "generated_rgb",
-        "review_id": "N27",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N27"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D08_second_light_blue.mp4",
         "source_sha256": "669112d7dd8eb34552368b6cb893e23e93d1760807f75f8dd2cb28d3bafb70c9",
         "media_role": "generated_rgb",
-        "review_id": "N28",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N28"
       }
     },
     "demos3:D09:head": {
@@ -350,22 +237,14 @@
         "source": "results/cosmos_demos3_v1/out/D09_head_grey_laminate.mp4",
         "source_sha256": "1647b5e3f8d9696a32dc4fb3d1fa976d77b7f13de381f2ca436c7e3211bd1baa",
         "media_role": "generated_rgb",
-        "review_id": "N29",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N29"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D09_head_light_blue.mp4",
         "source_sha256": "e60891a8835d6586e96d96b00114e879d74f5da3961f3ee47bf3d949b613f6dd",
         "media_role": "generated_rgb",
-        "review_id": "N30",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N30"
       }
     },
     "demos3:D09:second": {
@@ -374,22 +253,14 @@
         "source": "results/cosmos_demos3_v1/out/D09_second_grey_laminate.mp4",
         "source_sha256": "4d7cfddf3fe6aa7cec7d4c91d53d6bcb9d47329e5f6e386943507612bb2ab3c4",
         "media_role": "generated_rgb",
-        "review_id": "N31",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N31"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D09_second_light_blue.mp4",
         "source_sha256": "521f0c698d5564a7c44877891c24f3c24415ee3964a0fcceeac526cbe2fd5153",
         "media_role": "generated_rgb",
-        "review_id": "N32",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N32"
       }
     },
     "demos3:D10:head": {
@@ -398,22 +269,14 @@
         "source": "results/cosmos_demos3_v1/out/D10_head_grey_laminate.mp4",
         "source_sha256": "8078f102e574e2477231d4438a8f9623ffe87104932432fe354f380a0e22b0a8",
         "media_role": "generated_rgb",
-        "review_id": "N33",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N33"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D10_head_light_blue.mp4",
         "source_sha256": "867d93e63c9bbc284000915225dd19f8f698b82b3e69e2637a52977e2042372b",
         "media_role": "generated_rgb",
-        "review_id": "N34",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N34"
       }
     },
     "demos3:D10:second": {
@@ -422,22 +285,14 @@
         "source": "results/cosmos_demos3_v1/out/D10_second_grey_laminate.mp4",
         "source_sha256": "6e70903909a61c108c363cdadcb28f1c471099b5c0059b597eb898af2a786174",
         "media_role": "generated_rgb",
-        "review_id": "N35",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N35"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D10_second_light_blue.mp4",
         "source_sha256": "b5c07b3519c85ce57f47c628b82df4d14c611909420a80c9dab2b02fdf78479c",
         "media_role": "generated_rgb",
-        "review_id": "N36",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N36"
       }
     },
     "demos3:D11:head": {
@@ -446,22 +301,14 @@
         "source": "results/cosmos_demos3_v1/out/D11_head_grey_laminate.mp4",
         "source_sha256": "7de6acd1733a2db0f220531dc7a3ececfab6138fa9f33952d97952ae255a80e3",
         "media_role": "generated_rgb",
-        "review_id": "N37",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N37"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D11_head_light_blue.mp4",
         "source_sha256": "9a07b871fb07014851800a939599f3bcec975af8406b99c8247143f56bb48c0f",
         "media_role": "generated_rgb",
-        "review_id": "N38",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N38"
       }
     },
     "demos3:D11:second": {
@@ -470,22 +317,14 @@
         "source": "results/cosmos_demos3_v1/out/D11_second_grey_laminate.mp4",
         "source_sha256": "c35572376ea28ab73053d40dc2608f33260d531831aa0efa9cc6a5e9471429ca",
         "media_role": "generated_rgb",
-        "review_id": "N39",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N39"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D11_second_light_blue.mp4",
         "source_sha256": "fb020fbbced21a10a68ac37cf90467aab7d04293ec76fe74f30e61e7dac7a407",
         "media_role": "generated_rgb",
-        "review_id": "N40",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N40"
       }
     },
     "demos3:D12:head": {
@@ -494,22 +333,14 @@
         "source": "results/cosmos_demos3_v1/out/D12_head_grey_laminate.mp4",
         "source_sha256": "f5e7de3be5a836b344fa2fa3a2b95ed3ac69289797ff685c3c832642f502d2f3",
         "media_role": "generated_rgb",
-        "review_id": "N41",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N41"
       },
       "light_blue": {
         "status": "rejected",
         "source": "results/cosmos_demos3_v1/out/D12_head_light_blue.mp4",
         "source_sha256": "0e9840b1d26f7c902193758e9a18bd5ca5da3befd6a6c745181510bc229d7923",
         "media_role": "generated_rgb",
-        "review_id": "N42",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N42"
       }
     },
     "demos3:D12:second": {
@@ -518,22 +349,14 @@
         "source": "results/cosmos_demos3_v1/out/D12_second_grey_laminate.mp4",
         "source_sha256": "2e9034ff650e9e8f15c420059ae74ad5cd44e372524803c7bfbd6b4a7f7c5c9d",
         "media_role": "generated_rgb",
-        "review_id": "N43",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N43"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D12_second_light_blue.mp4",
         "source_sha256": "ea9e8f1b6d173358e6d9cdea5532ad551c2977a183ed2f9d5c573703e88a38bb",
         "media_role": "generated_rgb",
-        "review_id": "N44",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N44"
       }
     },
     "demos3:D13:head": {
@@ -542,22 +365,14 @@
         "source": "results/cosmos_demos3_v1/out/D13_head_grey_laminate.mp4",
         "source_sha256": "a76aa16cd6e83a9fb0cf33dc29d8a95bb7633679a73eee55a7e68e0f0f2758b3",
         "media_role": "generated_rgb",
-        "review_id": "N45",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N45"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D13_head_light_blue.mp4",
         "source_sha256": "8defc7a96b18ed4b838d62ebe86e1facda679580f1290ea18943a68de987c18f",
         "media_role": "generated_rgb",
-        "review_id": "N46",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N46"
       }
     },
     "demos3:D13:second": {
@@ -566,22 +381,14 @@
         "source": "results/cosmos_demos3_v1/out/D13_second_grey_laminate.mp4",
         "source_sha256": "026636349c339fba997fa4f7f67c3ebee2bb14d3e706d127d154c9531184f309",
         "media_role": "generated_rgb",
-        "review_id": "N47",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N47"
       },
       "light_blue": {
         "status": "rejected",
         "source": "results/cosmos_demos3_v1/out/D13_second_light_blue.mp4",
         "source_sha256": "3719d0b1afdb8064e6243c56570b34de41f7001053ce8f2d957a94019ca13fe6",
         "media_role": "generated_rgb",
-        "review_id": "N48",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N48"
       }
     },
     "demos3:D14:head": {
@@ -590,22 +397,14 @@
         "source": "results/cosmos_demos3_v1/out/D14_head_grey_laminate.mp4",
         "source_sha256": "207d401efab8620755b82c0022ad729010d61abe6e711542a7e608e5b92b2299",
         "media_role": "generated_rgb",
-        "review_id": "N49",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N49"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D14_head_light_blue.mp4",
         "source_sha256": "c6d6e82a6f07247bac4b97280906d770a1656ebaaa3f72ddd56cd520903a5b26",
         "media_role": "generated_rgb",
-        "review_id": "N50",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N50"
       }
     },
     "demos3:D14:second": {
@@ -614,22 +413,14 @@
         "source": "results/cosmos_demos3_v1/out/D14_second_grey_laminate.mp4",
         "source_sha256": "a8ebba98820d64e71ba4776597aa22f6edef1086d25510f2d66ec431417b1868",
         "media_role": "generated_rgb",
-        "review_id": "N51",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N51"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D14_second_light_blue.mp4",
         "source_sha256": "1cb8563527b21fe274ce082a4f46123816a8f4090bc0f7bb8abd06d68095a587",
         "media_role": "generated_rgb",
-        "review_id": "N52",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N52"
       }
     },
     "demos3:D15:head": {
@@ -638,22 +429,14 @@
         "source": "results/cosmos_demos3_v1/out/D15_head_grey_laminate.mp4",
         "source_sha256": "671a9bbe8c0ecc456e3abc2a625425fc68634e6e84343a3c936aa49bb498ccf5",
         "media_role": "generated_rgb",
-        "review_id": "N53",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N53"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D15_head_light_blue.mp4",
         "source_sha256": "5c6b135405fb637a4162c23ba23f6b2204ef08ede6fea1dcf948af4c1f3459b9",
         "media_role": "generated_rgb",
-        "review_id": "N54",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N54"
       }
     },
     "demos3:D15:second": {
@@ -662,22 +445,14 @@
         "source": "results/cosmos_demos3_v1/out/D15_second_grey_laminate.mp4",
         "source_sha256": "1cf8471c1617d03c7624be5cf0b749a57e160722affe847cba37be5b0c0b62aa",
         "media_role": "generated_rgb",
-        "review_id": "N55",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N55"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D15_second_light_blue.mp4",
         "source_sha256": "ad25daf60d2f417d8b599bc31e1bbd395690e2a5a55fdb4122f5db8de9ced701",
         "media_role": "generated_rgb",
-        "review_id": "N56",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N56"
       }
     },
     "demos3:D16:head": {
@@ -686,22 +461,14 @@
         "source": "results/cosmos_demos3_v1/out/D16_head_grey_laminate.mp4",
         "source_sha256": "c9c418e6e130e06cdc1a304af2869dd34b0fee470a594f8f5049dc1904b5c9a4",
         "media_role": "generated_rgb",
-        "review_id": "N57",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N57"
       },
       "light_blue": {
         "status": "rejected",
         "source": "results/cosmos_demos3_v1/out/D16_head_light_blue.mp4",
         "source_sha256": "707b55ddaf0e2dda36e1474953f0cacaa36b99ac335f0f3327bd017f058a9d8f",
         "media_role": "generated_rgb",
-        "review_id": "N58",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User requested deletion",
-        "deleted_by_user": true
+        "review_id": "N58"
       }
     },
     "demos3:D16:second": {
@@ -710,22 +477,14 @@
         "source": "results/cosmos_demos3_v1/out/D16_second_grey_laminate.mp4",
         "source_sha256": "603b59b090b9cb18fdd46c4c83f476f680d4f8eb60f096c47f88a935a00b09ae",
         "media_role": "generated_rgb",
-        "review_id": "N59",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N59"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D16_second_light_blue.mp4",
         "source_sha256": "fc35c3e1d0c3a6a90421f6c48c1c60b1f0d6bfd032465ad55e358d3e568d2fb1",
         "media_role": "generated_rgb",
-        "review_id": "N60",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N60"
       }
     },
     "demos3:D17:head": {
@@ -734,22 +493,14 @@
         "source": "results/cosmos_demos3_v1/out/D17_head_grey_laminate.mp4",
         "source_sha256": "3e8f0b0c88bf5dc734ac1584d68248650857cde86a6b57114faedb2b879494c1",
         "media_role": "generated_rgb",
-        "review_id": "N61",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N61"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D17_head_light_blue.mp4",
         "source_sha256": "37cd4fdb612c7c34111e8dc0e65610b0b983158bb058cb07337c8db752fc0049",
         "media_role": "generated_rgb",
-        "review_id": "N62",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N62"
       }
     },
     "demos3:D17:second": {
@@ -758,22 +509,14 @@
         "source": "results/cosmos_demos3_v1/out/D17_second_grey_laminate.mp4",
         "source_sha256": "8e2f2419e965a5eebe3502951628ff7b78dc6addf2fbdcb32063be3002442a11",
         "media_role": "generated_rgb",
-        "review_id": "N63",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N63"
       },
       "light_blue": {
         "status": "approved",
         "source": "results/cosmos_demos3_v1/out/D17_second_light_blue.mp4",
         "source_sha256": "d4830a99bce8e54542a89fc9c49ca7f9597aac3b10baee9886db0584b47b72fe",
         "media_role": "generated_rgb",
-        "review_id": "N64",
-        "reviewed_at": "2026-10-12T11:53:35.487422+01:00",
-        "reviewer": "user",
-        "reason": "User explicitly approved all remaining Cosmos demos3 v1 colour outputs",
-        "deleted_by_user": false
+        "review_id": "N64"
       }
     }
   }

@@ -1,6 +1,6 @@
 """MuJoCo scene: floating-wrist Inspire right hand (5 fingers, SPIDER asset), table, tall block, person proxy.
 
-The wrist is six position-controlled joints (3 slide + 3 hinge), standing in for an ideal arm (no forearm, R07).
+The wrist is six position-controlled joints (3 slide + 3 hinge), standing in for an ideal arm (no forearm).
 Hand bodies are gravity-compensated, as an arm controller would do. The hand collides with the table and block through
 convex hulls of its visible meshes.
 
@@ -38,7 +38,7 @@ TOP = Rotation.from_matrix(np.diag([1.0, -1.0, -1.0]))
 @dataclass
 class SceneConfig:
     """Scene settings; datasets record every field. build() makes the final scene only (checked below)."""
-    block_size: tuple = (0.062, 0.038, 0.086)  # full edge lengths, m: the user's real block standing on its end
+    block_size: tuple = (0.062, 0.038, 0.086)  # full edge lengths, m: the real block standing on its end
     block_mass: float = 0.12
     block_rgba: tuple = (0.85, 0.2, 0.15, 1)
     table_rgba: tuple = (0.85, 0.85, 0.82, 1)
@@ -48,7 +48,7 @@ class SceneConfig:
     floor_rgba: tuple = (0.35, 0.3, 0.27, 1)
     light: tuple = None                       # the asset's lights
     collision_geometry: str = "full"          # visible mesh hulls collide
-    forearm: bool = False                     # R07: floating hand without a forearm
+    forearm: bool = False                     # floating hand without a forearm
     carry_height: float = .10                 # block carry height above its start (m)
     approach_height: float = .25              # hand approach/retreat height (m)
     camera_fovy: float = 55.

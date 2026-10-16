@@ -2,7 +2,7 @@
 
 Losses: a cross-look contrastive task loss (two views of an episode from different looks; same task = positive) and a
 composition ranking loss (z(a) - z(b) + z(c) should be nearest a clip of the target task, from another start).
-Sim tracks get SAM3-like noise. Every sim camera trains (R17); head.pt is the final epoch of a fixed schedule (R19).
+Sim tracks get SAM3-like noise. Every sim camera trains; head.pt is the final epoch of a fixed schedule.
 The head never sees a real clip.
 Usage: python -m handsoff.model.train DATA --out DIR [--epochs N] [--seed S] [--device cuda|cpu] [--resume]
 """

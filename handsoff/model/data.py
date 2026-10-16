@@ -66,7 +66,7 @@ class TrackNoise:
 
 
 def validate_folds(folds, need_validation=True):
-    """Each take/start group has exactly one fold. Real splits may have no validation takes (R08)."""
+    """Each take/start group has exactly one fold. Real splits may have no validation takes."""
     if set(folds) != {'train', 'validation', 'test'}:
         raise ValueError('Need explicit train/validation/test folds')
     membership = {}
@@ -96,17 +96,15 @@ def sim_folds(metas):
 
 
 def load_sim(dataset):
-    """Sim dataset that passes every user rule (docs/decisions.md) -> (features, metas, rows, folds)."""
-    from handsoff import rules
+    """Sim dataset that passes the data checks (handsoff/checks.py) -> (features, metas, rows, folds)."""
+    from handsoff import checks
     root = Path(dataset).resolve()
     manifest = json.loads((root/'manifest.json').read_text())
     if not manifest.get('complete'):
         raise ValueError('Need complete simulation data')
-    rules.registry()
-    failed = [f'{name}: {detail}' for name, (applies, fn) in rules.CHECKS.items() if 'sim' in applies.split()
-              for ok, detail in [fn(sim=root, manifest=manifest)] if not ok]
+    failed = checks.failures(root)
     if failed:
-        raise ValueError('Simulation data breaks user rules: ' + '; '.join(failed))
+        raise ValueError('Sim data fails the data checks: ' + '; '.join(failed))
     D = load_features(root)
     D['x'] = {k: v.float() for k, v in D['x'].items()}
     metas = [json.loads((root/f'ep{e:05d}/meta.json').read_text()) for e in D['eps']]
@@ -128,7 +126,7 @@ def load_sim(dataset):
 
 def load_queries(qdir, review_path=REVIEW_PATH):
     """Real dataset -> (keys [(ep, view)], x {frames, track} [N, ...], metas {ep: meta}). Generated (Cosmos)
-    views without the user's approval are left out."""
+    views without an approved review are left out."""
     qdir = Path(qdir)
     f = np.load(qdir/'cosmos_agent.npz')
     all_keys = list(zip(f['ep'].tolist(), f['view'].tolist()))

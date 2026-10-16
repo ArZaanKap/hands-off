@@ -1,4 +1,4 @@
-"""Scene and robot motion: block-frame roll, rectangular support, success gates, collision geometry, R20 grasp."""
+"""Scene and robot motion: block-frame roll, rectangular support, success gates, collision geometry, grasp from the person's side."""
 import json
 import unittest
 from pathlib import Path
@@ -92,7 +92,7 @@ class Grasp(unittest.TestCase):
         self.assertEqual(task_grip(GRIP, -np.pi/2).as_array().tolist(), GRIP['params'])
         self.assertEqual(task_grip(GRIP, np.pi/2).as_array().tolist(), GRIP['left_params'])
 
-    def test_fingers_point_away_from_the_person_for_every_task(self):   # R20
+    def test_fingers_point_away_from_the_person_for_every_task(self):
         for roll in (-np.pi/2, 0., np.pi/2):
             gp, bank = grasp_variant(task_grip(GRIP, roll), roll)
             _, rot = grasp_frame(gp, np.zeros(3), 0., bank=bank)

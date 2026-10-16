@@ -2,13 +2,13 @@
 
 An action is (dx, dy, roll): move the block by (dx, dy) on the table and roll it about the block's initial forward
 axis (local x) through its centre. Positive roll tips the top toward local +y (the person's left at a square start).
-Translation stays in the table frame (R02).
+Translation stays in the table frame.
 
 A grip (GraspParams) places the grasp frame relative to the block: hand orientation = block yaw * yaw * TOP * tilt
 about the grasp y axis (tilt > 0 points the fingers down), and an offset of the grasp site from the block centre in that
 hand frame (z < 0 = palm standing off the face). The grip is fixed to the block during the carry, so the hand turns
 with the roll. Rolls use a side grasp; for roll left it is the roll-right grasp turned 180 deg about the forward axis,
-so the wrist stays on the person's side like a human right hand (R20, motion "clearance_side_human").
+so the wrist stays on the person's side like a human right hand (motion "clearance_side_human").
 
 The hand starts and ends at rest out of view, approaches from above, releases at the lowest height that clears the
 table, and the reported outcome is measured from the block, not commanded.
@@ -42,7 +42,7 @@ class GraspParams:
     finger_flex: float = 0.5
     pre_open: float = 0.2       # finger and thumb flex during approach, as a fraction of the closed flex
     bank_extra: float = 0.0     # clearance_side_human roll left only: extra turn about the finger axis (rad), palm
-                                # from the block's side face toward its upper edge (R20)
+                                # from the block's side face toward its upper edge
 
     def as_array(self):
         """Nine values; a tenth only for a roll-left grasp that uses bank_extra."""
@@ -129,7 +129,7 @@ def orientation_errors(R, block_yaw, command_roll):
 
 def grasp_variant(gp: GraspParams, roll):
     """Bank of the side grasp about the finger axis for a roll: roll right -90 deg; roll left +90 deg + bank_extra, the
-    roll-right grasp turned about the forward axis (fingers still point away from the person, R20)."""
+    roll-right grasp turned about the forward axis (fingers still point away from the person)."""
     if abs(roll) <= np.pi/4:
         return gp, 0.
     return gp, (np.pi/2 + gp.bank_extra if roll > 0 else -np.pi/2)
@@ -137,7 +137,7 @@ def grasp_variant(gp: GraspParams, roll):
 
 def task_grip(record, roll):
     """Grip parameters for one task from a grip record: upright top grasp, a separately tuned roll-left grasp when
-    the record has one (R20), else the roll grasp."""
+    the record has one, else the roll grasp."""
     if abs(roll) < np.pi/4 and 'upright_params' in record:
         return GraspParams.from_array(record['upright_params'])
     if roll > 0 and 'left_params' in record:
@@ -201,7 +201,7 @@ def run(act: Action, gp: GraspParams, cfg: SceneConfig = SceneConfig(), block_xy
         model=None, record_hz=0.0, motion=MOTION):
     """Simulate one task; `record_hz` > 0 logs block pose, qpos and waypoint index at that rate."""
     if motion != MOTION:
-        raise ValueError(f"Only the {MOTION} motion is supported (R20)")
+        raise ValueError(f"Only the {MOTION} motion is supported")
     m = model if model is not None else build(cfg)
     d = mujoco.MjData(m)
     hand = Hand(m)

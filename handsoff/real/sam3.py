@@ -1,7 +1,7 @@
 """SAM3 text-prompted segmentation of phone frames (.venv-mask, GPU): the agent mask and the block mask/track.
 
 Agent = person + hand + arm (each prompt's instances united, dilated 7 px), because the sim masks its whole person
-proxy too (R15). The block is the single best "wooden block" instance, after rejecting candidates that are too large
+proxy too. The block is the single best "wooden block" instance, after rejecting candidates that are too large
 (the table), mostly inside the agent mask, touching the image border, or far from where the block starts and ends.
 """
 import cv2

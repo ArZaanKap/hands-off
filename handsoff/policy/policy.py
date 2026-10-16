@@ -19,6 +19,7 @@ Usage:
   python -m handsoff.policy.policy embed --real-only --head RUN --z FILE --real DIR      (no sim dataset needed)
   python -m handsoff.policy.policy train --z FILE --plans FILE --out DIR [--seed S]
   python -m handsoff.policy.policy eval  --sim DATA --z FILE --plans FILE --out DIR [--policy FILE] [--sets sim arith real]
+                                         [--robot arm]      (the same waypoints on the hand mounted on a UR5e arm)
 --sim also accepts the scene.json file and --plans the durations.npz file (eval of real clips without the sim dataset).
 """
 import argparse
@@ -164,9 +165,9 @@ def evaluate(a):
                 'arith': (d['za'], d['a_start'], d['a_target'])}
     if 'zr' in d:
         sets['real'] = (d['zr'], np.repeat(FIXED[None], len(d['zr']), 0), d['rtruth'])
-    report = dict(protocol=__doc__, policy_seed=ck['seed'], steps=ck['steps'], z=str(a.z))
+    report = dict(protocol=__doc__, policy_seed=ck['seed'], steps=ck['steps'], z=str(a.z), robot=a.robot)
     a.out.mkdir(parents=True, exist_ok=True)
-    with Pool(8, initializer=pl.init_worker, initargs=(a.sim,)) as workers:
+    with Pool(8, initializer=pl.init_worker, initargs=(a.sim, a.robot)) as workers:
         for k, (z, s, truth) in ((k, v) for k, v in sets.items() if k in a.sets):
             t0 = time.time(); y = act(z, s)
             runs = workers.map(pl.execute, [(tuple(map(int, t)), si, yi, durations) for t, si, yi in zip(truth, s, y)], chunksize=4)
@@ -203,6 +204,8 @@ def main():
     ap.add_argument('--policy', type=Path, help='eval: policy.pt (default OUT/policy.pt)')
     ap.add_argument('--seed', type=int, default=0)
     ap.add_argument('--sets', nargs='+', choices=['sim', 'arith', 'real'], default=['sim', 'arith', 'real'])
+    ap.add_argument('--robot', choices=['hand', 'arm'], default='hand',
+                    help='eval: floating hand (default) or the hand on a UR5e arm (handsoff.sim.arm)')
     a = ap.parse_args(); torch.set_num_threads(8)
     if a.stage == 'plans':
         a.plans.parent.mkdir(parents=True, exist_ok=True)

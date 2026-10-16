@@ -1,11 +1,11 @@
 """Phone takes -> model inputs (training and test takes alike): two synced phones, agent masked, block tracked.
 
   sync    (CPU, .venv-spider) audio offset between the two phones, their common window, a full side-by-side MP4 and a
-          24-frame motion sheet per take for the user's review, and a labels file to fill in (never overwritten).
-  inputs  (GPU, .venv-mask; refuses takes without user-confirmed labels, R09) per phone: 8 samples over the window
-          -> SAM3 block -> square crop centred on the block's start (R10) -> 93 cropped frames at 478 px (the clip
+          24-frame motion sheet per take for label review, and a labels file to fill in (never overwritten).
+  inputs  (GPU, .venv-mask; refuses takes without confirmed labels) per phone: 8 samples over the window
+          -> SAM3 block -> square crop centred on the block's start -> 93 cropped frames at 478 px (the clip
           Cosmos sees) -> 8 frames at 448 -> person/hand/arm mask + block track. With --cosmos, the take's
-          user-approved Cosmos variants (R01) that pass the automatic preservation check are added as extra views.
+          approved Cosmos variants that pass the automatic preservation check are added as extra views.
 Raw layout: RAW/arz{N}.mp4 (head phone) + RAW/del{N}.mp4 (second phone). Take id = --id-offset + N: training takes
 D01-D17 use offset 0, test takes offset 100 (T101...).
 Usage: python -m handsoff.real.prepare sync --raw RAW --review DIR [--id-offset 100]
@@ -186,7 +186,7 @@ def inputs(a):
     rows = [r for r in pairing['takes'] if not a.takes or r['number'] in a.takes]
     for r in rows:
         if not labels.get(r['take'], {}).get('user_confirmed'):
-            raise ValueError(f"{take_name(r['take'])}: label not confirmed by the user (R09)")
+            raise ValueError(f"{take_name(r['take'])}: label not confirmed")
         for kind in ('head', 'second'):
             if digest(ROOT/r[kind]['source']) != r[kind]['sha256']:
                 raise ValueError(f"{r[kind]['source']} changed since sync; rerun sync")

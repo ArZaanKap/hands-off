@@ -1,7 +1,7 @@
 {
   "schema": "demos3 categorical audit v1",
   "source": "manual inspection of paired full-motion sheets, endpoints and dense rolling frames",
-  "label_frame": "Translation: person/table direction. Roll: initial block-local forward edge. User confirmed D13 right-upright, D14 left-upright, D15 left-roll on spot, D16 right-roll on spot. D13 also has unintended block-frame +y drift; do not reinterpret this as world-frame +y or a clean pure-sideways control. On 2026-10-12 the user reviewed half-speed head|second videos of all 16 included takes (results/label_check_v1) and replied 'all correct': every translation and roll label confirmed.",
+  "label_frame": "Translation: person/table direction. Roll: initial block-local forward edge. D13 also has unintended block-frame +y drift, so it is not a clean pure-sideways control. Every translation and roll label was confirmed by watching half-speed head and second-phone videos of all 16 takes.",
   "stay_definition": "pick up and return near start; ordinary landing variation allowed, not a stationary do-nothing clip or calibrated zero-centre displacement",
   "measurement_limits": "No measured centimetres, calibrated roll/yaw angles, frame-exact sync, or claim of pure single-axis 3D motion.",
   "annotations": [
@@ -287,7 +287,7 @@
       "strict_matched_start_verified": false,
       "distance_cm": null,
       "roll_deg": null,
-      "notes": "User confirms right-upright move, with unintended extra translation in block-frame +y. Keep the right-upright category; exclude from clean pure-sideways controls. Drift magnitude not measured.",
+      "notes": "Right-upright move, with unintended extra translation in block-frame +y. Keep the right-upright category; exclude from clean pure-sideways controls. Drift magnitude not measured.",
       "user_confirmed": true,
       "exclude_from_pure_sideways_control": true,
       "extra_translation_axis": "block +y",
@@ -311,7 +311,7 @@
       "strict_matched_start_verified": false,
       "distance_cm": null,
       "roll_deg": null,
-      "notes": "User confirms move left upright.",
+      "notes": "Move left, upright.",
       "user_confirmed": true,
       "exclude_from_pure_sideways_control": false,
       "extra_translation_axis": null,
@@ -335,7 +335,7 @@
       "strict_matched_start_verified": false,
       "distance_cm": null,
       "roll_deg": null,
-      "notes": "User confirms roll left on the spot.",
+      "notes": "Roll left on the spot.",
       "user_confirmed": true,
       "exclude_from_pure_sideways_control": false,
       "extra_translation_axis": null,
@@ -359,7 +359,7 @@
       "strict_matched_start_verified": false,
       "distance_cm": null,
       "roll_deg": null,
-      "notes": "User confirms roll right on the spot.",
+      "notes": "Roll right on the spot.",
       "user_confirmed": true,
       "exclude_from_pure_sideways_control": false,
       "extra_translation_axis": null,
@@ -390,8 +390,6 @@
       "video_header_note": ""
     }
   ],
-  "last_user_correction_at": "2026-10-11T21:03:26.544579+01:00",
-  "composite_recordings": "User explicitly confirms no right/left-plus-roll takes were recorded today.",
-  "excluded_pairs_file": "demos3/exclusions.json",
-  "last_user_confirmation_at": "2026-10-12T14:40:59+01:00"
+  "composite_recordings": "No move-plus-roll takes are in this set.",
+  "excluded_pairs_file": "demos3/exclusions.json"
 }

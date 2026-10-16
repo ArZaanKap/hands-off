@@ -19,7 +19,7 @@ DY = {-1: -.15, 0: 0., 1: .15}; ROLL = {-1: -np.pi/2, 0: 0., 1: np.pi/2}
 TASKS = [(m, r) for m in (-1, 0, 1) for r in (-1, 0, 1)]
 N_WP, D_WP = 14, 21
 CFG = GRIP = MOTION = None
-_hand = _model = None
+_hand = _model = _arm = None
 
 
 def configure(source):
@@ -29,10 +29,13 @@ def configure(source):
     CFG, GRIP, MOTION = SceneConfig(**man['scene']), man['grip'], man['motion']
 
 
-def init_worker(source):
-    """Pool initializer: one MuJoCo model per worker."""
-    global _hand, _model
+def init_worker(source, robot="hand"):
+    """Pool initializer: one MuJoCo model per worker; robot="arm" also builds the UR5e scene (handsoff.sim.arm)."""
+    global _hand, _model, _arm
     configure(source); _model = build(CFG); _hand = Hand(_model)
+    if robot == "arm":
+        from handsoff.sim import arm
+        _arm = arm.build(CFG)
 
 
 def starts(n, seed):
@@ -66,17 +69,23 @@ def teacher(job):
 
 
 def execute(job):
-    """One physics run of waypoints y (None = the script itself) for task t at start s. Success = the right task
-    (movement and roll category), a clean outcome and a gentle placement."""
+    """One physics run of waypoints y (None = the script itself) for task t at start s, on the floating hand or, after
+    init_worker(..., robot="arm"), on the UR5e arm. Success = the right task (movement and roll category), a clean
+    outcome and a gentle placement."""
     t, s, y, durations = job
     act = P.Action(dy=DY[t[0]], roll=ROLL[t[1]]); gp = P.task_grip(GRIP, ROLL[t[1]])
-    original = P.plan
-    if y is not None:
-        P.plan = lambda *a, **k: decode(y, centre(s), durations)
-    try:
-        o = P.run(act, gp, CFG, block_xy=s[:2].tolist(), block_yaw=float(s[2]), model=_model, motion=MOTION)
-    finally:
-        P.plan = original
+    if _arm is not None:
+        from handsoff.sim import arm
+        wps = decode(y, centre(s), durations) if y is not None else P.plan(_hand, act, gp, centre(s), s[2], CFG)
+        o = arm.run(wps, act, CFG, s[:2].tolist(), float(s[2]), _arm)
+    else:
+        original = P.plan
+        if y is not None:
+            P.plan = lambda *a, **k: decode(y, centre(s), durations)
+        try:
+            o = P.run(act, gp, CFG, block_xy=s[:2].tolist(), block_yaw=float(s[2]), model=_model, motion=MOTION)
+        finally:
+            P.plan = original
     out = np.r_[o.disp[:2], o.roll]
     right = bool((category(out) == np.array(t)).all())
     gentle = bool(P.placement_success(o, CFG))

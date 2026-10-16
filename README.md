@@ -150,7 +150,7 @@ Tested on an aarch64 NVIDIA DGX Spark (GB10, CUDA 13), Python 3.12, [uv](https:/
 | Test on new recordings ([guide](docs/own_recordings.md)) | `bash scripts/run_test.sh RAW` | ~1 min per take |
 | Unit tests | `.venv-spider/bin/python -m unittest discover -s tests -t .` | 2 s |
 
-Each script runs detached, writes a log and stops at the first failed step. `python -m handsoff.rules` checks a dataset against the design rules (`docs/decisions.md`) before training.
+Each script runs detached, writes a log and stops at the first failed step. `python -m handsoff.checks` checks each dataset against the setup described here before the GPU steps.
 
 - **Reproducibility check:** a fresh run of `scripts/train.sh` and the evaluation steps of `WEIGHTS=results/final scripts/run_test.sh` reproduce every reported physics outcome, for all 3 seeds: 432 sim clips, 36 arithmetic queries, 32 development clips and 36 test clips per seed. Trained head weights are bit-identical.
 - **Data:** `scripts/build_sim.sh` rebuilds the sim training set. The real recordings are not published, so the development and test rows need them; every other row runs without them.
@@ -166,11 +166,11 @@ handsoff/
   model/   embed.py (Cosmos-Embed1) · head.py (intent head) · tasks.py (9 tasks, composition) · data.py
            train.py (head training) · arithmetic.py (composition examples)
   policy/  plans.py (teacher waypoints, physics execution) · policy.py (z + start → motion; embed, train, eval)
-  rules.py automatic checks of the design rules
+  checks.py data checks run by the scripts
 weights/   trained head and policy (seed 0), sim scene settings: all that scripts/run_test.sh needs
 scripts/   one shell script per stage
-config/    grip parameters, confirmed labels, take split, Cosmos review log, track-noise models
+config/    grip parameters, confirmed labels, Cosmos review log, track-noise models
 tests/     unit tests: robot geometry and grip, task composition, trainer leakage and resume, policy, approval gate
 docs/      own_data.md (how the real data was recorded and used) · tried_and_dropped.md (approaches tried, with results)
-           own_recordings.md (guide for new recordings) · decisions.md (design rules and rationale) · media/
+           own_recordings.md (guide for new recordings) · media/
 ```

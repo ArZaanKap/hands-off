@@ -12,7 +12,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from handsoff import rules
+from handsoff import checks
 from handsoff.model import train
 from handsoff.model.data import sim_folds, validate_folds
 from handsoff.model.head import Head
@@ -99,8 +99,8 @@ class Training(unittest.TestCase):
             def run(out, epochs, resume=False, extra=()):
                 args = ['train', str(dataset), '--out', str(out), '--device', 'cpu', '--epochs', str(epochs),
                         '--batch-size', '18', '--composition-batch', '4', *(['--resume'] if resume else []), *extra]
-                with patch.object(sys, 'argv', args), patch.object(rules, 'CHECKS', {}), \
-                        patch.object(rules, 'registry', lambda: {}), contextlib.redirect_stdout(io.StringIO()):
+                with patch.object(sys, 'argv', args), patch.object(checks, 'failures', lambda sim: []), \
+                        contextlib.redirect_stdout(io.StringIO()):
                     train.main()
             run(d/'resumed', 1); run(d/'resumed', 2, True); run(d/'fresh', 2)
             resumed = torch.load(d/'resumed/last.pt', weights_only=False); fresh = torch.load(d/'fresh/last.pt', weights_only=False)

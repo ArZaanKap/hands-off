@@ -121,7 +121,7 @@ tail -f results/test/chain.log
 ```
 - The first command starts the run in the background. The second follows its progress (Ctrl+C stops following, not the run).
 - The run does, in order:
-  1. **Rules:** checks the code and labels against the design rules (`docs/decisions.md`).
+  1. **Rules:** checks that every take has a confirmed label and the same crop as the sim clips (`handsoff/checks.py`).
   2. **Inputs:** for each phone, 8 frames are taken, cropped around the block, and the person is masked grey (SAM3). This is the step that uses the GPU.
   3. **Embed:** Cosmos-Embed1 turns each masked clip into features.
   4. **Intent:** the trained head turns the features into the 64-D intent vector *z*.
@@ -157,7 +157,7 @@ bash scripts/run_test.sh data/raw/batch2 results/batch2 results/batch2_inputs da
 | Message | Fix |
 |---|---|
 | `Unpaired files: head only [3] ...` | `arz3.mp4` has no `del3.mp4` (or the reverse). Every take needs both. |
-| `T101: label not confirmed by the user (R09)` | Set `"user_confirmed": true` for that take in `labels.json` (Step 5). |
+| `T101: label not confirmed` | Set `"user_confirmed": true` for that take in `labels.json` (Step 5). |
 | `... changed since sync; rerun sync` | A video was replaced after Step 4. Repeat Step 4. |
 | `Inputs/settings changed; use a fresh output directory` | The takes changed since the last run. Use new output folders (see Running again). |
 | SAM3 fails to load (`facebook/sam3` not found) | SAM3 was not downloaded. Repeat the login and setup in Step 1. |
