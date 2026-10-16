@@ -40,6 +40,8 @@ Scripted plans, 100 new starts × 9 tasks (floating hand: 100%):
 - **Why the force term:** the arm's own inertia changes how the hand behaves on contact. Only the full version works from both bases.
 - **Base placement:** 24 random reachable bases on the person's side succeed on 863/864 episodes.
 
+![Real test demonstrations and the same policy output executed by the Inspire hand on the UR5e arm](media/arm_real_examples.jpg)
+
 Full system, policy seed 0: arm vs floating hand.
 
 | Evaluation set | Floating hand | Arm |
@@ -52,18 +54,21 @@ Full system, policy seed 0: arm vs floating hand.
 - **Clip by clip:** the arm reaches the same success on 536/536 runs, with the final block pose within 0.2 mm. Every failure is a wrong task choice by the policy; none is an execution failure.
 - **Limits:** peak joint speed is 137°/s.
 
-Robustness, scripted plans, 50 starts × 9 tasks per condition:
+Robustness, teacher plans, 50 starts × 9 tasks per condition, floating hand / arm. Grasps searched at the nominal block only (`config/grip_v3.json`) vs under randomised mass and friction (`config/grip_v4.json`, used by the released system):
 
-| Condition | Floating hand | Arm |
+| Condition | Nominal-block grasps | Searched grasps |
 |---|---|---|
-| Block mass ×2 / friction 1.5 | 100% / 100% | 100% / 100% |
-| Block mass ×0.5 | 67% | 67% |
-| Friction 0.6 | 67% | 67% |
-| Force/torque sensor delay 10 / 20 ms | — | 100% / 100% |
-| Force/torque sensor noise 1 / 2 / 4 N | — | 100% / 96% / 94% |
+| Nominal block (0.12 kg, friction 1.0) | 100 / 100% | 100 / 100% |
+| Block mass ×2 (0.24 kg) / friction 1.5 | 100 / 100% | 100 / 100% |
+| Block mass ×0.5 (0.06 kg) | 67 / 67% | 100 / 100% |
+| Friction 0.6 | 67 / 67% | 100 / 100% |
+| 0.04 kg / friction 0.4 / 0.06 kg + friction 0.6 / 0.04 kg + friction 0.4 | 33 / 33% each | 100 / 100% each |
+| Arm only: force/torque sensor delay 10 / 20 ms | 100% / 100% | 100% / 100% |
+| Arm only: force/torque sensor noise 1 / 2 / 4 N | 100% / 96% / 94% | 100% / 97% / 95% |
 
-- **The arm adds no fragility.** Under a light block or low friction, every failure is a roll-right task, on both hands.
-- **The fragile part is the scripted roll-right grasp.** It is the natural target for reinforcement learning: a grasp trained under randomised mass and friction, rewarded by physics success.
+- **The arm adds no fragility.** Under every mass and friction change, the arm and the floating hand succeed on the same share of plans.
+- **The fragile part was the grasp.** With the nominal-block grasps, every failure is a roll-right or upright task; the searched grasps remove all of them. The arm's only losses are from force/torque sensor noise.
+- **Full system with the searched grasps:** the arm and the floating hand reach the same outcome on every clip, for each of the 3 policy seeds.
 
 ## Run
 

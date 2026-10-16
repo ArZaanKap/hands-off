@@ -134,12 +134,12 @@ At the end of `results/test/chain.log`, one line per clip (example from two real
 ```
   take 101 head    demonstrated: move left + roll left  robot did: move left + roll left  success
   take 101 second  demonstrated: move left + roll left  robot did: move right + roll right fail
-  take 102 head    demonstrated: move left + roll right robot did: move left + roll right success
-  take 102 second  demonstrated: move left + roll right robot did: stay + roll right      fail
+  take 102 head    demonstrated: move right + roll right robot did: move right + roll right success
+  take 102 second  demonstrated: move right + roll right robot did: move right + roll left fail
 ```
 - **success** = the right movement and the right roll, with a clean, gentle placement.
 - Per-clip details are in `results/test/seed0/runs_real.json`, and totals in `results/test/seed0/report.json`.
-- **Reference:** the shipped weights (seed 0) scored 36% on the real test set (3 seeds: 36–53%; chance 11%). "Did it move" and "did it roll" are usually right. Roll *direction* is near chance on real video (README, Failure case).
+- **Reference:** the shipped weights (seed 0) scored 36% on the real test set (3 seeds: 36–56%; chance 11%). "Did it move" and "did it roll" are usually right. Roll *direction* is near chance on real video (README, Failure case).
 
 ---
 

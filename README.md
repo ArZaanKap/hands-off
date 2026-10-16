@@ -2,13 +2,13 @@
 
 **Can a robot trained only in simulation infer *what* was done to an object from video, without observing *how* it was done, and generalise to real human demonstrations?**
 
-![Real demonstration, model input with the agent masked, and the simulated hand executing the inferred task](docs/media/hero.gif)
+![Real demonstration, model input with the agent masked, and the simulated Inspire hand on a UR5e arm executing the inferred task](docs/media/hero.gif)
 
 ## Overview
 
 - **Input:** multi-view video of a block being moved, with the agent (person or robot hand) masked out.
 - **Model:** frozen Cosmos-Embed1 + a small trained head → 64-D intent vector *z*.
-- **Action:** a learned policy turns *z* into a motion for a simulated 5-finger hand (MuJoCo).
+- **Action:** a learned policy turns *z* into a motion for a simulated 5-finger hand (MuJoCo), floating or on a UR5e arm.
 - **Tasks:** 9 = move {left, stay, right} × roll {left, none, right}.
 - **Training:** sim only. **Evaluation:** held-out sim and real human demonstrations.
 
@@ -32,7 +32,7 @@ Details: [docs/own_data.md](docs/own_data.md).
 - **Head losses:**
   - contrastive loss: same task → small angle
   - arithmetic loss: z(a) − z(b) + z(c) → target task
-- **Policy:** *z* and the block start select one of 16 motion bins. The start alone sets the fine offset. The output is 14 hand waypoints, executed in physics.
+- **Policy:** *z* and the block start select one of 16 motion bins. The start alone sets the fine offset. The output is 14 hand waypoints, executed in physics. The teacher's grasps were searched under randomised block mass and friction.
 
 ## Structure of the intent space
 
@@ -88,30 +88,30 @@ Policy task success (%), mean over 3 head seeds (range):
 | Evaluation set | Success |
 |---|---|
 | Sim, held-out starts (432 clips) | 85 (85–85) |
-| Intent arithmetic (36 queries) | 98 (97–100) |
-| Real development set (16 takes, 32 clips) | 64 (59–69) |
-| Real test set (18 takes, 36 clips) | 44 (36–53) |
+| Intent arithmetic (36 queries) | 97 (94–100) |
+| Real development set (16 takes, 32 clips) | 65 (59–69) |
+| Real test set (18 takes, 36 clips) | 47 (36–56) |
 | Chance | 11 |
 
-Real test set, per question (outcome correct, %): did it move 90 · which way 71 · did it roll 100 · which way it rolled 52.
+Real test set, per question (outcome correct, %): did it move 94 · which way 71 · did it roll 100 · which way it rolled 54.
 
 - **Pre-registered system:** frozen before recording, it scored 39% on the real test set.
-- **Final system:** chosen afterwards on non-test data only. Its 44% is reported post hoc.
+- **Final system:** chosen afterwards on non-test data only. Its 47% is reported post hoc.
 
 ## Limitations
 
 ### 1. Strong on held-out sim, weaker on real video
 
 - **Held-out sim test set** (432 clips, unseen block starts): 85% task success.
-- **Real test set** (36 clips, 18 takes): 44% task success; chance is 11%.
+- **Real test set** (36 clips, 18 takes): 47% task success; chance is 11%.
 - **Why:** the head and the policy train on sim clips only; real clips are used only for evaluation.
 
-### 2. Roll direction on real video is at chance
+### 2. Roll direction on real video is near chance
 
 ![Angle between intent vectors: real "roll left" 32° from sim "roll right", 90° from sim "roll left"](docs/media/angles_failure.png)
 
 - **Example:** real "roll left" lies closer to sim "roll right" (32°) than to sim "roll left" (90°).
-- **Real test set:** whether the block rolled is 100% correct; which way it rolled is 52%, chance level.
+- **Real test set:** whether the block rolled is 100% correct; which way it rolled is 54%, near chance (50%).
 - **Likely causes (not isolated):**
   - in 8 masked, low-resolution frames, a left and a right roll of a small block look alike
   - in sim, the robot's grip gives the direction away
@@ -119,7 +119,7 @@ Real test set, per question (outcome correct, %): did it move 90 · which way 71
 ### 3. Narrow setup
 
 - One block and 9 discrete tasks: a 15 cm move left/right or none, a quarter-turn roll left/right or none.
-- For real clips, the block starts from one fixed position in sim. The hand executes its waypoints open loop, without feedback.
+- For real clips, the block starts from one fixed position in sim. The hand executes its waypoints open loop, without feedback; this holds for block masses 0.04–0.3 kg and frictions 0.5–1.5 ([docs/tried_and_dropped.md](docs/tried_and_dropped.md)), not for a block moved after planning.
 - Real data: one demonstrator, two scenes, 34 takes.
 
 Other approaches tried, with their results: [docs/tried_and_dropped.md](docs/tried_and_dropped.md).
@@ -128,8 +128,8 @@ Other approaches tried, with their results: [docs/tried_and_dropped.md](docs/tri
 
 - **Roll direction:** more frames and higher resolution around the turn.
 - **Sim-to-real:** more varied sim appearance; adding real clips to head training has not helped so far (real test set, nearest-clip readout: 47% → 35%).
-- **Richer tasks:** continuous goals instead of 9 categories, other objects, a closed-loop policy.
-- **Grasp robustness:** the scripted roll-right grasp fails with a light block or low friction, on both the floating and the arm-mounted hand ([docs/arm.md](docs/arm.md)); a grasp trained with reinforcement learning under randomised mass and friction is the natural next step.
+- **Richer tasks:** continuous goals instead of 9 categories, other objects.
+- **Closed-loop control:** a DAgger-trained 25 Hz student already recovers 72% of blocks pushed after planning (open loop 9%), but it sees the block as cleanly as its scripted expert; noisy, delayed sensing is the next step ([docs/tried_and_dropped.md](docs/tried_and_dropped.md)).
 
 ## Running on new recordings
 
@@ -148,6 +148,7 @@ Tested on an aarch64 NVIDIA DGX Spark (GB10, CUDA 13), Python 3.12, [uv](https:/
 | Sync two-phone takes | `.venv-spider/bin/python -m handsoff.real.prepare sync --raw RAW --review DIR` | ~5 s per take |
 | Mask, crop, embed takes | `bash scripts/prepare_real.sh ...` (see header) | ~1 min per take |
 | Train and evaluate (plans, head, policy; 3 seeds) | `bash scripts/train.sh` | ~15 min |
+| Robustness to block mass and friction | `bash scripts/robustness.sh` | ~20 min |
 | Test on new recordings ([guide](docs/own_recordings.md)) | `bash scripts/run_test.sh RAW` | ~1 min per take |
 | Unit tests | `.venv-spider/bin/python -m unittest discover -s tests -t .` | 2 s |
 
@@ -160,7 +161,7 @@ Each script runs detached, writes a log and stops at the first failed step. `pyt
 
 ```
 handsoff/
-  sim/     scene.py (MuJoCo scene) · primitive.py (the 9 robot motions) · grip.py (grasp search)
+  sim/     scene.py (MuJoCo scene) · primitive.py (the 9 robot motions) · grip.py, grip_robust.py (grasp searches)
            dataset.py (sim training set) · render.py, geometry.py (cameras, masks) · ovrtx.py, photoreal.py (RTX looks)
   real/    sync.py (two-phone audio sync) · sam3.py (masks, block) · framing.py (crop, shared with sim)
            prepare.py (takes → model inputs) · cosmos.py (Cosmos transfer) · review_gate.py (human approval gate)

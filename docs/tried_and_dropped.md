@@ -48,3 +48,43 @@ The system trains on sim only; these controls check whether real training data w
 | Flow matching (500k steps) | Sim 82%, development set 50%: no better than bins | Not pursued |
 | Bins with the offset from *z* and start | Test set 42% (pre-registered system, robot 39%); results depended on the policy seed | Offset now from the start only: development set 38% → 62.5%, test 44% |
 | PCA or LDA to 8 numbers before the policy | LDA +2.5 on the development set (5 seeds), arithmetic −7 | Not adopted |
+
+## Grasp robustness
+
+![Roll right on a slippery block: the grasp searched at the nominal block only lets it slip; the grasp searched under randomised mass and friction carries it](media/grasp_robustness.jpg)
+
+The grasps first used were searched at the nominal block only; roll right failed on 68% of held-out light or slippery blocks (0.04–0.3 kg, friction 0.4–1.5). Tried, on roll right, scored on 336 held-out mass × friction cases:
+
+| Tried | Result | Outcome |
+|---|---|---|
+| Grasp search (cross-entropy method) under randomised mass and friction, open loop | 100% held-out; upright grasp the same way: 64% → 100% | Adopted (`handsoff/sim/grip_robust.py`, `config/grip_v4.json`) |
+| PPO residual on the scripted grasp from finger closing (±15 mm, ±0.15 rad), touch-like and block-pose observations, 25 Hz | 63% | Too narrow: the working grasp moves the palm 25 mm and tilts it 0.25 rad before the fingers close |
+| PPO residual from the descent (±40 mm, ±0.4 rad, thumb yaw), 3 seeds | 100% / 82% / 0%; one seed tipped the block over instead of lifting it, which still scored for no-move tasks | Seed-unstable |
+| Same, no task credit without a lift, 3 seeds | 99% / 94% / 0%; the third seed stopped lifting early in training | Seed-unstable |
+| Replay of the best PPO seed's actions without feedback | 94% (live 100%) | Most of what PPO learned is a better fixed grasp, the same kind of fix as the search |
+
+Full system with the adopted grasps (`scripts/robustness.sh`; seed 0, the same *z*; task success %, nominal-block grasps → searched grasps):
+
+| Block | Sim, 432 held-out clips | Real test set, 36 clips |
+|---|---|---|
+| Nominal (0.12 kg, friction 1.0) | 85 → 85 | 36 → 36 |
+| Light (0.06 kg) | 57 → 85 | 19 → 36 |
+| Very light, less friction (0.04 kg, 0.8) | 28 → 85 | 3 → 36 |
+| Slippery (friction 0.6) | 57 → 85 | 19 → 36 |
+| Light and slippery (0.09 kg, 0.5) | 28 → 85 | 3 → 36 |
+| Heavy, less friction (0.30 kg, 0.7) | 57 → 85 | 19 → 36 |
+
+All 3 seeds with the searched grasps: 85% sim and 47% real test in every condition. With the nominal-block grasps every loss is a roll-right or upright task; with the searched grasps every remaining failure is a wrong task in *z*.
+
+## Closed loop (experiment, not in the released system)
+
+![The block is pushed after the motion was planned: open loop closes beside it; the closed-loop student re-aims and succeeds](media/closed_loop_push.jpg)
+
+The open-loop policy fails when the block is moved after the motion was planned: 9% success after a 2–2.7 cm push just before the descent (100% without a push).
+
+| Tried | Result | Outcome |
+|---|---|---|
+| DAgger student: MLP at 25 Hz, residual on the planned hand pose from the descent to the release; observes the block pose against the plan, contact forces, slip; expert = the scripted plan re-made from the block's current pose; 5 iterations × 1500 episodes with random pushes, mass and friction | Pushed: 72% (roll right 95–97%, roll left 77–78%, upright 48–52%); expert 100%; no push: 100% | Recovers most pushes; the gap to the expert is imitation error, largest for the upright grasp. The student sees clean block pose, so it does not yet earn its keep over the script |
+
+Full system (video → *z* → policy → student, nominal block): pushed sim clips 14% → 54%, pushed real test clips 1% → 19%; without a push the student changes nothing (85% sim, 36% real).
+

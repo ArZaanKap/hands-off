@@ -16,6 +16,7 @@ Why the system has its current shape. Each choice lists the reason and, where on
 |---|---|---|
 | Floating 5-finger Inspire hand, no forearm | A human-like hand without arm reach limits or inverse kinematics; failures then come from the intent, not the arm | Mounting it on a UR5e gives the same outcome in 536/536 runs ([arm.md](arm.md)) |
 | The hand grips from the demonstrator's side, fingers pointing away from the person; roll left uses its own human-like grasp | The masked silhouette should look like a person doing the same task. The earlier roll-left grip was the roll-right grip turned 180°, so its silhouette mirrored a human roll | With the mirrored grip, a sim-only model called 20 of 21 real head-phone rolls "roll right" |
+| Grasps searched under randomised block mass and friction (cross-entropy method, `handsoff/sim/grip_robust.py`) | A grasp tuned on one nominal block can rely on that block's exact weight and friction | Nominal-block roll-right grasp: 32% on held-out light or slippery blocks; searched grasp: 100%, and the full system holds its nominal success under every tested change (README) |
 
 ## Input video
 
@@ -56,6 +57,6 @@ Why the system has its current shape. Each choice lists the reason and, where on
 
 | Choice | Reason | Evidence |
 |---|---|---|
-| Real test set recorded after the system was frozen; its result reported once, beside the pre-registered system | Keeps the test set out of every design decision | Pre-registered 39%, final 44% (post hoc) |
+| Real test set recorded after the system was frozen; its result reported once, beside the pre-registered system | Keeps the test set out of every design decision | Pre-registered 39%, final 47% (post hoc) |
 | Every method compared on the same clips and settings; 3 head seeds with ranges | Seed spread is large on 36 real clips | Results summary, README |
-| Report per question (moved, which way, rolled, which way) | Shows where transfer fails | Roll direction at chance on real (52%) |
+| Report per question (moved, which way, rolled, which way) | Shows where transfer fails | Roll direction near chance on real (54%) |

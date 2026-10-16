@@ -12,6 +12,7 @@ from handsoff.sim.primitive import (Action, GraspParams, Outcome, block_roll, gr
 from handsoff.sim.scene import HAND_CT, TOP, Hand, SceneConfig, build
 
 GRIP = json.loads((Path(__file__).resolve().parents[1]/'config/grip_v3.json').read_text())
+GRIP_V4 = json.loads((Path(__file__).resolve().parents[1]/'config/grip_v4.json').read_text())
 
 
 def clean_outcome(**kw):
@@ -93,10 +94,16 @@ class Grasp(unittest.TestCase):
         self.assertEqual(task_grip(GRIP, np.pi/2).as_array().tolist(), GRIP['left_params'])
 
     def test_fingers_point_away_from_the_person_for_every_task(self):
-        for roll in (-np.pi/2, 0., np.pi/2):
-            gp, bank = grasp_variant(task_grip(GRIP, roll), roll)
-            _, rot = grasp_frame(gp, np.zeros(3), 0., bank=bank)
-            self.assertGreater(rot.apply([1, 0, 0])[0], .5, roll)
+        for grip in (GRIP, GRIP_V4):
+            for roll in (-np.pi/2, 0., np.pi/2):
+                gp, bank = grasp_variant(task_grip(grip, roll), roll)
+                _, rot = grasp_frame(gp, np.zeros(3), 0., bank=bank)
+                self.assertGreater(rot.apply([1, 0, 0])[0], .5, roll)
+
+    def test_robust_grip_changes_only_roll_right_and_upright(self):
+        changed = {k for k in GRIP if GRIP[k] != GRIP_V4[k]}
+        self.assertEqual(changed - {'note'}, {'params', 'upright_params'})
+        self.assertEqual(GRIP_V4['left_params'], GRIP['left_params'])
 
     def test_carried_block_gets_the_commanded_roll_and_move(self):
         cfg = SceneConfig(); h = Hand(build(cfg)); centre = np.array([.01, -.02, .043]); yaw = .4

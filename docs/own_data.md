@@ -35,7 +35,7 @@ Each real clip goes through the same steps as a sim clip: SAM3 masks the person,
 
 - Recorded on 14 Oct, after the pre-registered system had been frozen (13 Oct).
 - Labels were confirmed before any score was computed.
-- The pre-registered system scored 39%; the final system, chosen on non-test data only, scores 44% (chance 11%).
+- The pre-registered system scored 39%; the final system, chosen on non-test data only, scores 47% (chance 11%).
 - The outdoor scene does not lower the score.
 
 ### 3. Real development set

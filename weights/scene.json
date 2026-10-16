@@ -41,15 +41,15 @@
    0.086
   ],
   "params": [
-   -0.040420496869366516,
-   0.026605765202550653,
-   -0.06269062407578921,
-   -0.016264198734076564,
-   -0.1608031618920748,
-   0.5807931838455013,
-   0.15526604345001244,
-   0.2498320094822541,
-   0.16572298056528012
+   -0.04460536563345661,
+   0.05202762092650155,
+   -0.06057843663040271,
+   -0.1492118807216463,
+   -0.4111172257392402,
+   0.798923227330198,
+   0.15225989864041992,
+   0.32445264334301255,
+   0.17091342689273692
   ],
   "names": [
    "off_x",
@@ -76,15 +76,15 @@
    "touchdown_m_s": 0.3
   },
   "upright_params": [
-   -0.019638006594059988,
-   0.022471807483107918,
-   -0.061660119945088826,
-   0.04320334064593813,
-   -0.0758657370349133,
-   0.34464455174545705,
-   0.017172513654835186,
-   0.44517160870759265,
-   0.32676530795791003
+   -0.01886714500378952,
+   0.028924331274871515,
+   -0.07003500205458779,
+   -0.0323470249623524,
+   0.07781446117158426,
+   0.322947719478115,
+   0.0,
+   0.44797282469790856,
+   0.3476600430207365
   ],
   "left_params": [
    -0.057502903033457314,
@@ -107,7 +107,8 @@
    "min_clearance_mm": 0.0,
    "failures": []
   },
-  "note": "Roll left uses its own grasp from the person's side (clearance_side_human). Roll right and upright grasps unchanged from gentle_release_v1."
+  "note": "grip_v3 with the roll-right and upright grasps replaced by the randomised-physics search (robust_source). Roll left (left_params) unchanged: it already holds when the block's mass and friction change.",
+  "robust_source": "handsoff/sim/grip_robust.py (seed 0, warm start grip_v3): roll-right 'params' and 'upright_params' searched under randomised block mass (0.045-0.28 kg) and friction (0.45-1.4); validation success 1.0 on 72 cases each"
  },
  "motion": "clearance_side_human"
 }

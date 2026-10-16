@@ -2,14 +2,16 @@
 # Train and evaluate the final system, 3 seeds (about 15 min on one GB10; the head takes seconds on the GPU, the policy
 # about 3 min on 8 CPU cores): teacher plans -> intent head (sim only) -> z of every clip -> policy -> physics tests on
 # held-out sim starts, the composition queries and the real development takes (skipped if REAL is absent; the head and
-# policy never train on real clips). Also writes results/final/scene.json and durations.npz (for scripts/run_test.sh).
+# policy never train on real clips). The robot uses config/grip_v4.json, grasps searched under randomised block mass and
+# friction (handsoff/sim/grip_robust.py); the sim clips were made with grip_v3, which the masked intent input does not
+# show. Also writes results/final/scene.json (with grip_v4) and durations.npz (for scripts/run_test.sh).
 # Usage: bash scripts/train.sh [SIM] [REAL]   (defaults data/sim/intent_tasks_train_v3, data/real/demos3_approved_rgb_v3)
 source "$(dirname -- "$0")/common.sh"
 export SIM=${1:-data/sim/intent_tasks_train_v3} REAL=${2:-data/real/demos3_approved_rgb_v3}
 chain() {
   R=(); if [[ -d $REAL ]]; then R=(--real "$REAL"); else echo "no real development set at $REAL: sim tests only"; fi
   echo "START $(date -Is) checks"; spider -m handsoff.checks --sim "$SIM" "${R[@]}"
-  echo "START $(date -Is) plans"; spider -m handsoff.policy.policy plans --sim "$SIM" --plans results/final/plans.npz
+  echo "START $(date -Is) plans"; spider -m handsoff.policy.policy plans --sim "$SIM" --plans results/final/plans.npz --grip config/grip_v4.json
   for seed in 0 1 2; do
     O=results/final/seed$seed
     echo "START $(date -Is) head seed $seed"; spider -m handsoff.model.train "$SIM" --out $O/head --seed $seed > /dev/null

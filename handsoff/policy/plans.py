@@ -3,7 +3,7 @@
 A motion is 14 waypoints; each is stored relative to the block centre as position (3), 6-D rotation (6) and the 12
 finger targets, so a plan is 294 numbers. Durations stay the script's. Starts are drawn like the sim dataset
 (xy +-3 cm, yaw +-0.25 rad). Scene, grip and controller come from the sim dataset's manifest or its scene.json copy
-(configure()).
+(configure()); a grip file can replace the grip, and the block's mass and friction can be changed.
 """
 import json
 from pathlib import Path
@@ -22,17 +22,20 @@ CFG = GRIP = MOTION = None
 _hand = _model = _arm = None
 
 
-def configure(source):
-    """Scene, grip and motion of the sim dataset: its manifest.json, or a scene.json holding just those three."""
+def configure(source, grip=None, **physics):
+    """Scene, grip and motion of the sim dataset: its manifest.json, or a scene.json holding just those three.
+    grip: a grip file (e.g. config/grip_v4.json) in place of the source's grip; physics: block_mass and/or friction."""
     global CFG, GRIP, MOTION
     source = Path(source); man = json.loads((source/'manifest.json' if source.is_dir() else source).read_text())
-    CFG, GRIP, MOTION = SceneConfig(**man['scene']), man['grip'], man['motion']
+    CFG, GRIP, MOTION = SceneConfig(**{**man['scene'], **physics}), man['grip'], man['motion']
+    if grip is not None:
+        GRIP = json.loads(Path(grip).read_text())
 
 
-def init_worker(source, robot="hand"):
+def init_worker(source, robot="hand", grip=None, physics=None):
     """Pool initializer: one MuJoCo model per worker; robot="arm" also builds the UR5e scene (handsoff.sim.arm)."""
     global _hand, _model, _arm
-    configure(source); _model = build(CFG); _hand = Hand(_model)
+    configure(source, grip, **(physics or {})); _model = build(CFG); _hand = Hand(_model)
     if robot == "arm":
         from handsoff.sim import arm
         _arm = arm.build(CFG)

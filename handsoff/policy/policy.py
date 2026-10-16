@@ -14,13 +14,16 @@ Tests (success = right task + clean + gentle placement, measured in physics):
 
 Stages: plans | embed | train | eval      (.venv-spider; CPU; physics on 8 workers)
 Usage:
-  python -m handsoff.policy.policy plans --sim DATA --plans FILE      (also writes scene.json and durations.npz beside it)
+  python -m handsoff.policy.policy plans --sim DATA --plans FILE [--grip FILE]   (also writes scene.json, durations.npz)
   python -m handsoff.policy.policy embed --sim DATA --head RUN --z FILE [--real DIR]
   python -m handsoff.policy.policy embed --real-only --head RUN --z FILE --real DIR      (no sim dataset needed)
   python -m handsoff.policy.policy train --z FILE --plans FILE --out DIR [--seed S]
   python -m handsoff.policy.policy eval  --sim DATA --z FILE --plans FILE --out DIR [--policy FILE] [--sets sim arith real]
                                          [--robot arm]      (the same waypoints on the hand mounted on a UR5e arm)
---sim also accepts the scene.json file and --plans the durations.npz file (eval of real clips without the sim dataset).
+                                         [--block-mass KG] [--friction MU]      (changed block: scripts/robustness.sh)
+plans --grip replaces the sim dataset's grip in the teacher plans (scripts/train.sh: config/grip_v4.json); the policy's
+waypoints carry the grasp, so eval needs no grip. --sim also accepts the scene.json file and --plans the durations.npz
+file (eval of real clips without the sim dataset).
 """
 import argparse
 import json
@@ -75,10 +78,12 @@ class Policy(torch.nn.Module):
 
 def make_plans(a):
     t0 = time.time()
-    with Pool(8, initializer=pl.init_worker, initargs=(a.sim,)) as pool:
+    with Pool(8, initializer=pl.init_worker, initargs=(a.sim, 'hand', a.grip)) as pool:
         np.savez(a.plans, **pl.build_set(a.n_starts, a.plan_seed, pool))
     np.savez(a.plans.parent/'durations.npz', durations=np.load(a.plans)['durations'])
     man = json.loads((a.sim/'manifest.json').read_text())
+    if a.grip:
+        man['grip'] = json.loads(a.grip.read_text())
     (a.plans.parent/'scene.json').write_text(json.dumps({k: man[k] for k in ('scene', 'grip', 'motion')}, indent=1))
     print(f'plans: {a.n_starts} starts x 9 tasks in {time.time() - t0:.0f}s -> {a.plans}')
 
@@ -165,9 +170,10 @@ def evaluate(a):
                 'arith': (d['za'], d['a_start'], d['a_target'])}
     if 'zr' in d:
         sets['real'] = (d['zr'], np.repeat(FIXED[None], len(d['zr']), 0), d['rtruth'])
-    report = dict(protocol=__doc__, policy_seed=ck['seed'], steps=ck['steps'], z=str(a.z), robot=a.robot)
+    physics = {k: v for k, v in (('block_mass', a.block_mass), ('friction', a.friction)) if v is not None}
+    report = dict(protocol=__doc__, policy_seed=ck['seed'], steps=ck['steps'], z=str(a.z), robot=a.robot, physics=physics)
     a.out.mkdir(parents=True, exist_ok=True)
-    with Pool(8, initializer=pl.init_worker, initargs=(a.sim, a.robot)) as workers:
+    with Pool(8, initializer=pl.init_worker, initargs=(a.sim, a.robot, None, physics)) as workers:
         for k, (z, s, truth) in ((k, v) for k, v in sets.items() if k in a.sets):
             t0 = time.time(); y = act(z, s)
             runs = workers.map(pl.execute, [(tuple(map(int, t)), si, yi, durations) for t, si, yi in zip(truth, s, y)], chunksize=4)
@@ -206,6 +212,9 @@ def main():
     ap.add_argument('--sets', nargs='+', choices=['sim', 'arith', 'real'], default=['sim', 'arith', 'real'])
     ap.add_argument('--robot', choices=['hand', 'arm'], default='hand',
                     help='eval: floating hand (default) or the hand on a UR5e arm (handsoff.sim.arm)')
+    ap.add_argument('--grip', type=Path, help="plans: grip file in place of the sim dataset's (e.g. config/grip_v4.json)")
+    ap.add_argument('--block-mass', type=float, help='eval: block mass in kg (nominal 0.12)')
+    ap.add_argument('--friction', type=float, help='eval: block friction (nominal 1.0)')
     a = ap.parse_args(); torch.set_num_threads(8)
     if a.stage == 'plans':
         a.plans.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,76 @@
+{
+ "size": [
+  0.062,
+  0.038,
+  0.086
+ ],
+ "params": [
+  -0.04460536563345661,
+  0.05202762092650155,
+  -0.06057843663040271,
+  -0.1492118807216463,
+  -0.4111172257392402,
+  0.798923227330198,
+  0.15225989864041992,
+  0.32445264334301255,
+  0.17091342689273692
+ ],
+ "names": [
+  "off_x",
+  "off_y",
+  "off_z",
+  "yaw",
+  "tilt",
+  "thumb_yaw",
+  "thumb_flex",
+  "finger_flex",
+  "pre_open"
+ ],
+ "source": "tune_rectangle_grip.py; verified before installation",
+ "search": "results/gentle_release_v1/side_search.json",
+ "verification": "results/gentle_release_v1/physics.json",
+ "verified_cases": 45,
+ "roll_frame": "block",
+ "collision_geometry": "full",
+ "motion": "clearance_side_human",
+ "gentle": true,
+ "placement_tolerances": {
+  "actual_gap_mm": 10,
+  "commanded_gap_mm": 15,
+  "touchdown_m_s": 0.3
+ },
+ "upright_params": [
+  -0.01886714500378952,
+  0.028924331274871515,
+  -0.07003500205458779,
+  -0.0323470249623524,
+  0.07781446117158426,
+  0.322947719478115,
+  0.0,
+  0.44797282469790856,
+  0.3476600430207365
+ ],
+ "left_params": [
+  -0.057502903033457314,
+  -0.002709562099532188,
+  -0.07699986394035004,
+  0.059659583828043136,
+  -0.6,
+  0.9276338325486719,
+  0.21122087385960822,
+  0.2884582270182155,
+  0.12048470418544367,
+  -0.71663800173636
+ ],
+ "left_source": "results/human_grip_v1/search.json (tune_rectangle_grip --human-left, 1250 candidates), verified results/human_grip_v1/verification.json",
+ "left_verification": {
+  "cases": 108,
+  "task_and_gentle_ok": 108,
+  "worst_twist_deg": 1.2434707649884023,
+  "worst_pos_err_mm": 1.9970749940466013,
+  "min_clearance_mm": 0.0,
+  "failures": []
+ },
+ "note": "grip_v3 with the roll-right and upright grasps replaced by the randomised-physics search (robust_source). Roll left (left_params) unchanged: it already holds when the block's mass and friction change.",
+ "robust_source": "handsoff/sim/grip_robust.py (seed 0, warm start grip_v3): roll-right 'params' and 'upright_params' searched under randomised block mass (0.045-0.28 kg) and friction (0.45-1.4); validation success 1.0 on 72 cases each"
+}
