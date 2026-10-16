@@ -16,7 +16,7 @@
 
 ![Uncropped phone frames: head phone and second phone at the same moment, and the head phone in an outdoor scene](docs/media/own_data_frames.jpg)
 
-- **Recorded by the author:** 34 two-phone takes of one wooden block, one task per take. 16 development takes guided design choices; 18 test takes, recorded after the system was frozen, measure transfer (5 in an outdoor scene absent from training).
+- **Real recordings:** 34 two-phone takes of one wooden block, one task per take. 16 development takes guided design choices; 18 test takes, recorded after the system was frozen, measure transfer (5 in an outdoor scene absent from training).
 - **Role:** never trained on. Each real clip is encoded to *z* and drives the simulated hand, which measures sim-to-real transfer.
 - **Sim design:** the block, camera placement, cropping and robot grip match the recordings.
 
@@ -26,7 +26,7 @@ Details: [docs/own_data.md](docs/own_data.md).
 
 ![Architecture: input video, agent masking, Cosmos-Embed1, intent head, policy](docs/media/architecture.png)
 
-- **Agent masking (SAM3):** human and robot clips differ only in a grey silhouette. This closes the embodiment gap.
+- **Agent masking (SAM3):** human and robot clips differ only in a grey silhouette, so a person and the robot doing the same task look alike.
 - **Encoder:** Cosmos-Embed1, a video-text encoder from NVIDIA's Cosmos world-foundation-model platform, kept frozen. Reasons for each choice: [docs/design_choices.md](docs/design_choices.md).
 - **Head (0.84 M parameters):** per-frame Cosmos features and a 2D block track are mapped to *z*, with unit length.
 - **Head losses:**
@@ -79,7 +79,7 @@ Details: [docs/own_data.md](docs/own_data.md).
 
 - **Same task:** 36° between the real clip and a sim clip of the same task.
 - **Different task:** 81° to a sim clip of a different task.
-- **Drawing:** the angles are the true angles between the 64-D vectors. A 2D PCA would distort them (36° would shrink to a few degrees).
+- **Angles:** the true angles between the 64-D vectors. A 2D PCA would distort them (36° would shrink to a few degrees).
 
 ## Results summary
 
@@ -105,7 +105,7 @@ Real test set, per question (outcome correct, %): did it move 94 · which way 71
 - **Held-out sim test set** (432 clips, unseen block starts): 85% task success.
 - **Real test set** (36 clips, 18 takes): 47% task success; chance is 11%.
 - **Why:** the head and the policy train on sim clips only; real clips are used only for evaluation.
-- **Tried and dropped:** adding Cosmos-transferred real takes to training: real test set 47% → 40% ([details](docs/tried_and_dropped.md)).
+- **Tried and dropped:** training also on the development takes and their Cosmos-transferred versions: real test set 47% → 40% ([details](docs/tried_and_dropped.md)).
 
 ![A real take (left of each pair) and its Cosmos-transferred version (right): new table and sleeve, same block and motion](docs/media/cosmos_transfer_example.jpg)
 

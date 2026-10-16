@@ -1,6 +1,6 @@
 # Own data: how it was recorded and how it is used
 
-All real data in this project was recorded by the author. The system trains on sim clips only; the recordings measure how well it transfers to real human demonstrations, and they set how the sim was built. The recordings are not published; the trained weights and the recording guide ([own_recordings.md](own_recordings.md)) let others run the system on their own takes.
+All real data was recorded for this project. The system trains on sim clips only; the recordings measure how well it transfers to real human demonstrations, and they set how the sim was built. The recordings are not published; the trained weights and the recording guide ([own_recordings.md](own_recordings.md)) let others run the system on their own takes.
 
 ![Three uncropped phone frames: head phone and second phone at the same moment on the green table, and the head phone in the outdoor scene](media/own_data_frames.jpg)
 
@@ -71,5 +71,5 @@ A control head was also trained on the development takes, to check whether real 
 
 - **Sim only (the system):** 47% task accuracy on the real test set (nearest-clip readout).
 - **Sim + the 16 development takes:** 35%.
-- **Sim + the takes + 54 Cosmos-transferred versions** (each approved by the author after watching the full video): 40%.
+- **Sim + the takes + 54 Cosmos-transferred versions** (each checked in full before use): 40%.
 - **Cause:** the second phone stood on the other side of the table for 8 of the test takes. Heads trained on real takes learned the training phone's position and flipped left/right on those takes (movement correct 17% vs 67% for the sim-only head).
