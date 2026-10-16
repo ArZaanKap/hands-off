@@ -27,6 +27,7 @@ Details: [docs/own_data.md](docs/own_data.md).
 ![Architecture: input video, agent masking, Cosmos-Embed1, intent head, policy](docs/media/architecture.png)
 
 - **Agent masking (SAM3):** human and robot clips differ only in a grey silhouette. This closes the embodiment gap.
+- **Encoder:** Cosmos-Embed1, a video-text encoder from NVIDIA's Cosmos world-foundation-model platform, kept frozen. Reasons for each choice: [docs/design_choices.md](docs/design_choices.md).
 - **Head (0.84 M parameters):** per-frame Cosmos features and a 2D block track are mapped to *z*, with unit length.
 - **Head losses:**
   - contrastive loss: same task → small angle
@@ -128,7 +129,7 @@ Other approaches tried, with their results: [docs/tried_and_dropped.md](docs/tri
 - **Roll direction:** more frames and higher resolution around the turn.
 - **Sim-to-real:** more varied sim appearance; adding real clips to head training has not helped so far (real test set, nearest-clip readout: 47% → 35%).
 - **Richer tasks:** continuous goals instead of 9 categories, other objects, a closed-loop policy.
-- **Embodiment:** the same intent vector driving the hand mounted on an arm.
+- **Grasp robustness:** the scripted roll-right grasp fails with a light block or low friction, on both the floating and the arm-mounted hand ([docs/arm.md](docs/arm.md)); a grasp trained with reinforcement learning under randomised mass and friction is the natural next step.
 
 ## Running on new recordings
 
@@ -171,6 +172,7 @@ weights/   trained head and policy (seed 0), sim scene settings: all that script
 scripts/   one shell script per stage
 config/    grip parameters, confirmed labels, Cosmos review log, track-noise models
 tests/     unit tests: robot geometry and grip, task composition, trainer leakage and resume, policy, approval gate
-docs/      own_data.md (how the real data was recorded and used) · tried_and_dropped.md (approaches tried, with results)
+docs/      own_data.md (how the real data was recorded and used) · design_choices.md (why the system has this shape)
+           tried_and_dropped.md (approaches tried, with results)
            own_recordings.md (guide for new recordings) · media/
 ```
