@@ -105,6 +105,9 @@ Real test set, per question (outcome correct, %): did it move 94 · which way 71
 - **Held-out sim test set** (432 clips, unseen block starts): 85% task success.
 - **Real test set** (36 clips, 18 takes): 47% task success; chance is 11%.
 - **Why:** the head and the policy train on sim clips only; real clips are used only for evaluation.
+- **Tried and dropped:** adding Cosmos-transferred real takes to training: real test set 47% → 40% ([details](docs/tried_and_dropped.md)).
+
+![A real take (left of each pair) and its Cosmos-transferred version (right): new table and sleeve, same block and motion](docs/media/cosmos_transfer_example.jpg)
 
 ### 2. Roll direction on real video is near chance
 

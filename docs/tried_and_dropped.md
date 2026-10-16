@@ -39,6 +39,10 @@ The system trains on sim only; these controls check whether real training data w
 | Unlabelled "both phones must agree" loss on real takes | Every real clip collapsed to "roll left" | Not used |
 | Real *z* in policy training | Worse on held-out development takes (−19 points, policy seed 0) | Not adopted |
 
+![One real take (left of each pair) and its Cosmos-transferred version (right), 16 frames in time order: the table and sleeve change, the block and the motion are kept](media/cosmos_transfer_example.jpg)
+
+- **Intent vectors of the Cosmos-transferred clips** (no retraining): same-task clips point the same way (cosine 0.74, other tasks −0.08), but the task readout is 59%, against 62–75% for the real clips. The new looks add appearance variety, not task evidence.
+
 ## Policy (z → motion)
 
 | Tried | Result | Outcome |
@@ -46,7 +50,7 @@ The system trains on sim only; these controls check whether real training data w
 | Nearest sim clip lookup, then a scripted motion | Test set 47% (pre-registered) | Replaced by a learned policy so the motion comes from *z* directly |
 | Regression to 14 waypoints | Averages between tasks: test set 33% | Replaced by bins |
 | Flow matching (500k steps) | Sim 82%, development set 50%: no better than bins | Not pursued |
-| Bins with the offset from *z* and start | Test set 42% (pre-registered system, robot 39%); results depended on the policy seed | Offset now from the start only: development set 38% → 62.5%, test 44% |
+| Bins with the offset from *z* and start | Test set 42% (pre-registered system, robot 39%); results depended on the policy seed | Offset now from the start only: development set 38% → 62.5%, test 44% (47% with the grasps searched under randomised physics) |
 | PCA or LDA to 8 numbers before the policy | LDA +2.5 on the development set (5 seeds), arithmetic −7 | Not adopted |
 
 ## Grasp robustness
